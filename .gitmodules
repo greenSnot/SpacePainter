@@ -1,0 +1,3 @@
+[submodule "libs/snot.js"]
+	path = libs/snot.js
+	url = https://github.com/greenSnot/snot.js.git
