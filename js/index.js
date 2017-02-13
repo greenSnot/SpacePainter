@@ -2,23 +2,24 @@ var snot = require('../libs/snot.js/build/js/snot_webgl_renderer.min.js');
 var util = snot.util;
 var THREE = snot.THREE;
 
+var NET_SIZE = 100;
+var NET_DIVISION = 5;
+
 var triangle_net;
 var current_color = new THREE.Color();
 var triangle_net_kd;
 var random_color_range = 0.1 * (Math.random() - 0.5 > 0 ? 1 : -1);
 
-function set_color_from_intersects(intersects, color) {
-  for (var i = 0; i < intersects.length; ++i) {
-    if (intersects[i].object.name === 'triangle_net') {
-      var neighbors = triangle_net_kd.nearest(intersects[i].face, 20);
+function set_face_color(face, color) {
+  face.color.set(color);
+  triangle_net.geometry.colorsNeedUpdate = true;
+}
 
-      for (var j = 0; j < neighbors.length; ++j) {
-        neighbors[j][0].color.set(get_color());
-      }
-      intersects[i].face.color.set(color);
-      triangle_net.geometry.colorsNeedUpdate = true;
-      return;
-    }
+function set_color_by_point(point, color) {
+  var neighbors = triangle_net_kd.nearest(point, 1);
+
+  for (var j = 0; j < neighbors.length; ++j) {
+    set_face_color(neighbors[j][0], get_color());
   }
 }
 
@@ -29,21 +30,35 @@ function get_color() {
   return random_color;
 }
 
-function on_touch_move(e, x, y, point, intersects) {
-  set_color_from_intersects(intersects, get_color());
+function on_touch_move(e, x, y) {
+  e.preventDefault();
+  set_color_by_point(snot.raycaster_point_from_mouse(x, y, NET_SIZE), get_color());
 }
 
-function on_touch_start(e, x, y, point, intersects) {
+function raycaster_compute(x, y) {
+  var intersects = snot.raycaster.intersectObjects(snot.suspects_for_raycaster);
+  var point = util.standardlization(intersects[0].point, snot.clicks_depth);
+  return {
+    point: point,
+    intersects: intersects
+  };
+}
+
+function on_touch_start(e, x, y) {
+  e.preventDefault();
   if (e.touches.length > 1) {
     return;
   }
-  set_color_from_intersects(intersects, get_color());
+  set_color_by_point(snot.raycaster_point_from_mouse(x, y, NET_SIZE), get_color());
+}
+
+function on_touch_end(e) {
+  e.preventDefault();
 }
 
 snot.init({
   size: 1024,
   gyro: true,
-  clicks_depth: 1024 / 2.5,
   fov: 90,
   max_fov: 110,
   min_fov: 40,
@@ -54,13 +69,14 @@ snot.init({
   on_touch_move: on_touch_move,
   fisheye_offset: - 30,
   on_touch_start: on_touch_start,
-  raycaster_on_touch_move: true,
-  raycaster_on_touch_start: true,
+  raycaster_on_touch_move: false,
+  raycaster_on_touch_start: false,
+  raycaster_on_touch_end: false,
   sprites: [
     {
       id: 'triangle_net',
       mesh_generator: function () {
-        var geo = new THREE.IcosahedronGeometry(100, 5);
+        var geo = new THREE.IcosahedronGeometry(NET_SIZE, NET_DIVISION);
         triangle_net = new THREE.Mesh(
           geo,
           new THREE.MeshBasicMaterial({color: 0xffffff, vertexColors: THREE.VertexColors, side: THREE.DoubleSide})
@@ -88,7 +104,7 @@ snot.init({
       id: 'auxiliary_triangle_net',
       mesh_generator: function () {
         return new THREE.Mesh(
-          new THREE.IcosahedronGeometry(99, 5),
+          new THREE.IcosahedronGeometry(NET_SIZE - 1, NET_DIVISION),
           new THREE.MeshBasicMaterial({wireframe: true, color: 0x666666, opacity: 0.4, side: THREE.DoubleSide})
         );
       },
@@ -100,7 +116,7 @@ snot.init({
       id: 'auxiliary_sphere_net',
       mesh_generator: function () {
         return new THREE.Mesh(
-          new THREE.SphereGeometry(90, 32, 32),
+          new THREE.SphereGeometry(NET_SIZE - 1, 32, 32),
           new THREE.MeshBasicMaterial({wireframe: true, color: 0x666666, opacity: 0.4, side: THREE.DoubleSide})
         );
       },
