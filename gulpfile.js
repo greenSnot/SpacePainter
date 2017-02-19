@@ -76,7 +76,7 @@ function browserify_file(file, dest_name, dest, standalone, external) {
 
 function hint() {
   do_watch('hint');
-  return gulp.src(['./js/**/*.js'])
+  return gulp.src(['./js/**/*.js', '!./js/art-template.js'])
     .pipe(jshint({
       esversion: 6
     }))

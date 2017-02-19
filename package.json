@@ -2,6 +2,8 @@
   "name": "SpacePainter",
   "version": "1.0.0",
   "dependencies": {
+    "fastclick": "^1.0.6",
+    "npm-zepto": "^1.1.7",
     "three": "^0.84.0"
   },
   "devDependencies": {

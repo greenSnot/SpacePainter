@@ -1,14 +1,18 @@
 var snot = require('../libs/snot.js/build/js/snot_webgl_renderer.min.js');
+var gui = require('./gui.js');
 var util = snot.util;
 var THREE = snot.THREE;
+
+import { Pen } from './pen.js';
 
 var NET_SIZE = 100;
 var NET_DIVISION = 5;
 
+var pen = new Pen(0, 1, 0.6);
+pen.set_random_color_range(0.1);
+
 var triangle_net;
-var current_color = new THREE.Color();
 var triangle_net_kd;
-var random_color_range = 0.1 * (Math.random() - 0.5 > 0 ? 1 : -1);
 
 function set_face_color(face, color) {
   face.color.set(color);
@@ -19,20 +23,13 @@ function set_color_by_point(point, color) {
   var neighbors = triangle_net_kd.nearest(point, 1);
 
   for (var j = 0; j < neighbors.length; ++j) {
-    set_face_color(neighbors[j][0], get_color());
+    set_face_color(neighbors[j][0], pen.get_color());
   }
-}
-
-function get_color() {
-  var random_color = new THREE.Color().setRGB(current_color.r + Math.random() * random_color_range,
-      current_color.g + Math.random() * random_color_range,
-      current_color.b + Math.random() * random_color_range);
-  return random_color;
 }
 
 function on_touch_move(e, x, y) {
   e.preventDefault();
-  set_color_by_point(snot.raycaster_point_from_mouse(x, y, NET_SIZE), get_color());
+  set_color_by_point(snot.raycaster_point_from_mouse(x, y, NET_SIZE), pen.get_color());
 }
 
 function raycaster_compute(x, y) {
@@ -49,7 +46,7 @@ function on_touch_start(e, x, y) {
   if (e.touches.length > 1) {
     return;
   }
-  set_color_by_point(snot.raycaster_point_from_mouse(x, y, NET_SIZE), get_color());
+  set_color_by_point(snot.raycaster_point_from_mouse(x, y, NET_SIZE), pen.get_color());
 }
 
 function on_touch_end(e) {
@@ -128,65 +125,11 @@ snot.init({
   ]
 });
 
-var fps_dom = document.getElementsByClassName('fps')[0];
-var update_time_arr = [];
-function update_fps() {
-  var now = new Date().valueOf();
-  for (var t = 0; t < update_time_arr.length; ++t) {
-    if (update_time_arr[t] < now - 1000) {
-      update_time_arr.splice(t, 1);
-      t--;
-    }
-  }
-  update_time_arr.push(now);
-  fps_dom.innerHTML = update_time_arr.length;
-}
-
 function update() {
-  update_fps();
+  gui.update_fps();
   snot.update();
   requestAnimationFrame(update);
 }
 update();
 
-var palette_dom = document.getElementsByClassName('palette')[0];
-
-function add_color_btn(color, is_eraser) {
-  var dom = document.createElement('div');
-  dom.setAttribute('class', 'palette-color');
-  dom.setAttribute('style', is_eraser ? 'background:#fff;border:1px solid #' + color : 'background-color:#' + color);
-  dom.setAttribute('data-color', color);
-  if (!is_eraser) {
-    dom.addEventListener('click', function() {
-      var color = parseInt(this.getAttribute('data-color'), 16);
-      current_color.setHex(color);
-      random_color_range = 0.1 * (Math.random() - 0.5 > 0 ? 1 : -1);
-    });
-  } else {
-    dom.addEventListener('click', function() {
-      random_color_range = 0;
-      current_color.setRGB(1, 1, 1);
-    });
-  }
-  palette_dom.append(dom);
-}
-
-function add_btn_more(color) {
-  var dom = document.createElement('div');
-  dom.innerHTML = '...';
-  dom.setAttribute('class', 'btn-more');
-  dom.setAttribute('style', 'color:#' + color);
-  palette_dom.append(dom);
-}
-
-function init_palette() {
-  var c = new THREE.Color();
-  for (var i = 0.6; i < 0.9; i+= 0.1) {
-    add_color_btn(c.setHSL(0, 0.8, i).getHex().toString(16));
-  }
-  add_color_btn(c.setHSL(0, 0.8, 0.9).getHex().toString(16), true);
-  add_btn_more(c.setHSL(0, 1, 0.7).getHex().toString(16));
-  current_color.setHSL(0, 1, 0.6);
-}
-
-init_palette();
+gui.init(pen);
