@@ -15,20 +15,32 @@
     </div>
   </body>
   <div class="fps"></div>
-  <div class="menu">
-    <div class="tab-contents flex1">
-      <div class="tab-content" data-type="palette"></div>
-      <div class="tab-content" data-type="setting"></div>
-    </div>
-    <div class="menu-tabs">
-      <div class="menu-tab btn-palette"></div>
-      <div class="menu-tab btn-setting"></div>
+  <div class="menu h-flex">
+    <div class="menu-palette flex1"></div>
+    <div class="menu-buttons">
+      <div class="btn-redo"></div>
+      <div class="btn-undo"></div>
+      <div class="btn-setting"></div>
     </div>
   </div>
   <div class="main-panel h-flex v-center" data-active-panel="palette">
     <div class="main-palette flex1">
     </div>
-    <div class="pen-size-slider flex 1"></div>
+    <div class="pen-size-slider vh-center flex1">
+      <div class="icon-scale-wrap vh-center">
+        <div class="icon-scale">
+        </div>
+      </div>
+      <div class="slider-bar">
+        <div class="scales h-flex">
+          <div class="scale"></div>
+          <div class="scale"></div>
+          <div class="scale"></div>
+          <div class="scale"></div>
+        </div>
+        <div class="slider-head"></div>
+      </div>
+    </div>
     <div class="btn-trigger vh-center"><div>
   </div>
   <script id="template-btn-color" type="text/html">

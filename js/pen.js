@@ -25,4 +25,7 @@ export class Pen {
     var temp = new THREE.Color().setHSL(hsl.h, hsl.s, l);
     return temp;
   }
+  set_size(size) {
+    this.size = size;
+  }
 }

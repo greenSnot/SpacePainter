@@ -20,7 +20,7 @@ function set_face_color(face, color) {
 }
 
 function set_color_by_point(point, color) {
-  var neighbors = triangle_net_kd.nearest(point, 1);
+  var neighbors = triangle_net_kd.nearest(point, pen.size);
 
   for (var j = 0; j < neighbors.length; ++j) {
     set_face_color(neighbors[j][0], pen.get_color());
