@@ -15,8 +15,14 @@ var triangle_net;
 var triangle_net_kd;
 
 function set_face_color(face, color) {
-  face.color.set(color);
-  triangle_net.geometry.colorsNeedUpdate = true;
+  var index = face.index;
+  var arr = triangle_net.geometry.attributes.color.array;
+  for (var i = 0; i < 9; i += 3) {
+    arr[index + i] = color.r;
+    arr[index + i + 1] = color.g;
+    arr[index + i + 2] = color.b;
+  }
+  triangle_net.geometry.attributes.color.needsUpdate = true;
 }
 
 function set_color_by_point(point, color) {
@@ -73,23 +79,40 @@ snot.init({
     {
       id: 'triangle_net',
       mesh_generator: function () {
-        var geo = new THREE.IcosahedronGeometry(NET_SIZE, NET_DIVISION);
+        var geo = new THREE.IcosahedronBufferGeometry(NET_SIZE, NET_DIVISION);
         triangle_net = new THREE.Mesh(
           geo,
           new THREE.MeshBasicMaterial({color: 0xffffff, vertexColors: THREE.VertexColors, side: THREE.DoubleSide})
         );
 
-        for (var i = 0;i < geo.faces.length; ++i) {
-          var v1 = geo.vertices[geo.faces[i].a];
-          var v2 = geo.vertices[geo.faces[i].b];
-          var v3 = geo.vertices[geo.faces[i].c];
+        geo.addAttribute('color', new THREE.BufferAttribute(new Float32Array(geo.attributes.position.length), 3 ));
 
-          geo.faces[i].x = (v1.x + v2.x + v3.x) / 3;
-          geo.faces[i].y = (v1.y + v2.y + v3.y) / 3;
-          geo.faces[i].z = (v1.z + v2.z + v3.z) / 3;
-          geo.faces[i].index = i;
+        var faces = [];
+        for (var i = 0, j = geo.attributes.position.length / 9;i < j; ++i) {
+          var v1_x = geo.attributes.position.array[i * 9];
+          var v1_y = geo.attributes.position.array[i * 9 + 1];
+          var v1_z = geo.attributes.position.array[i * 9 + 2];
+
+          var v2_x = geo.attributes.position.array[i * 9 + 3];
+          var v2_y = geo.attributes.position.array[i * 9 + 4];
+          var v2_z = geo.attributes.position.array[i * 9 + 5];
+
+          var v3_x = geo.attributes.position.array[i * 9 + 6];
+          var v3_y = geo.attributes.position.array[i * 9 + 7];
+          var v3_z = geo.attributes.position.array[i * 9 + 8];
+
+          faces.push({
+            index: i * 9,
+            x: (v1_x + v2_x + v3_x) / 3,
+            y: (v1_y + v2_y + v3_y) / 3,
+            z: (v1_z + v2_z + v3_z) / 3
+          });
         }
-        triangle_net_kd = new util.kd_tree(triangle_net.geometry.faces, function(a, b) {
+        // reset color to #ffffff
+        for (var k = 0; k < geo.attributes.position.length; ++k) {
+          geo.attributes.color.array[k] = 1;
+        }
+        triangle_net_kd = new util.kd_tree(faces, function(a, b) {
           return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2) + Math.pow(a.z - b.z, 2);
         }, ['x', 'y', 'z']);
         return triangle_net;
