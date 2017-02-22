@@ -32,11 +32,11 @@ var dom_slider_bar = $('.slider-bar');
 var dom_fps = $('.fps');
 var update_time_arr = [];
 
-function show_menu() {
+function show_full_palette() {
   dom_full_palette_wrap.addClass('active');
 }
 
-function hide_menu() {
+function hide_full_palette() {
   dom_full_palette_wrap.removeClass('active');
 }
 
@@ -44,7 +44,7 @@ function set_main_panel(type) {
   dom_main_panel.attr('data-active-panel', type);
 }
 
-function gen_html_by_color_row_id(r) {
+function gen_html_by_color_row_id(r, selected_index) {
   var row = [];
   var c = new THREE.Color();
   for (var i = 0.6; i < 0.9; i+= 0.1) {
@@ -53,15 +53,16 @@ function gen_html_by_color_row_id(r) {
   row.push(c.setHSL(colors[r][0], colors[r][1], 0.9).getHex().toString(16));
   return template('template-color-row', {
     colors: row,
-    row_id: r
+    row_id: r,
+    selected_index: selected_index
   });
 }
 
-function update_main_palette(color_row_id) {
-  dom_main_palette.html(gen_html_by_color_row_id(color_row_id));
+function update_main_palette(color_row_id, selected_index) {
+  dom_main_palette.html(gen_html_by_color_row_id(color_row_id, selected_index));
 }
 
-function init_menu_palette() {
+function init_full_palette() {
   for (var r = 0; r < colors.length; ++r) {
     dom_full_palette[0].innerHTML += gen_html_by_color_row_id(r);
   }
@@ -71,23 +72,27 @@ function btn_color_on_click(e) {
   var color = parseInt(this.getAttribute('data-color'), 16);
   pen.set_color_hex(color);
 
+  var index = $(this).index();
+  var row_id = parseInt($(this).closest('.palette-color-row').attr('data-row-id'));
+  update_main_palette(row_id, index);
   if ($(this).closest('.main-panel').length === 0) {
-    var row_id = parseInt($(this).closest('.palette-color-row').attr('data-row-id'));
-    update_main_palette(row_id);
-    hide_menu();
+    hide_full_palette();
     set_main_panel('palette');
     dom_btn_trigger.removeClass('active');
+  } else {
+    $('.main-panel .palette-color.selected').removeClass('selected');
+    $(this).addClass('selected');
   }
 }
 
 function btn_trigger_on_click(e) {
   if ($(this).hasClass('active')) {
     $(this).removeClass('active');
-    hide_menu();
+    hide_full_palette();
     set_main_panel('palette');
   } else {
     $(this).addClass('active');
-    show_menu();
+    show_full_palette();
     set_main_panel('slider');
   }
 }
@@ -125,7 +130,7 @@ function init_events() {
 function init(_pen) {
   pen = _pen;
 
-  init_menu_palette();
+  init_full_palette();
   init_events();
 }
 

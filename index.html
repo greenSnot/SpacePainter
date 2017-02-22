@@ -44,7 +44,7 @@
     <div class="btn-trigger vh-center"><div>
   </div>
   <script id="template-btn-color" type="text/html">
-    <div class="palette-color" style="background:#<#=color#>;border:1px solid #<#=border_color#>;" data-color="<#=color#>">
+    <div class="palette-color <#=selected ? 'selected' : ''#>" style="background:#<#=color#>;border:1px solid #<#=border_color#>;" data-color="<#=color#>">
     </div>
   </script>
   <script id="template-color-row" type="text/html">
@@ -53,7 +53,8 @@
         <# var is_eraser = i === colors.length - 1; #>
         <# var color = is_eraser ? 'ffffff' : colors[i]; #>
         <# var border_color = is_eraser ? colors[2] : colors[i]; #>
-        <# include('template-btn-color', { color: color, border_color: border_color}) #>
+        <# var selected = i == selected_index; #>
+        <# include('template-btn-color', { color: color, border_color: border_color, selected: selected}) #>
       <#}#>
     </div>
   </script>
