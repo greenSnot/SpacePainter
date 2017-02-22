@@ -85,10 +85,10 @@ snot.init({
           new THREE.MeshBasicMaterial({color: 0xffffff, vertexColors: THREE.VertexColors, side: THREE.DoubleSide})
         );
 
-        geo.addAttribute('color', new THREE.BufferAttribute(new Float32Array(geo.attributes.position.length), 3 ));
+        geo.addAttribute('color', new THREE.BufferAttribute(new Float32Array(geo.attributes.position.array.length), 3 ));
 
         var faces = [];
-        for (var i = 0, j = geo.attributes.position.length / 9;i < j; ++i) {
+        for (var i = 0, j = geo.attributes.position.array.length / 9;i < j; ++i) {
           var v1_x = geo.attributes.position.array[i * 9];
           var v1_y = geo.attributes.position.array[i * 9 + 1];
           var v1_z = geo.attributes.position.array[i * 9 + 2];
@@ -109,7 +109,7 @@ snot.init({
           });
         }
         // reset color to #ffffff
-        for (var k = 0; k < geo.attributes.position.length; ++k) {
+        for (var k = 0; k < geo.attributes.position.array.length; ++k) {
           geo.attributes.color.array[k] = 1;
         }
         triangle_net_kd = new util.kd_tree(faces, function(a, b) {

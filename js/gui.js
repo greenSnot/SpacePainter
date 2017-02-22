@@ -21,10 +21,10 @@ var colors = [
   [0.4, 0.4],
 ];
 
-var dom_menu = $('.menu');
+var dom_full_palette_wrap = $('.full-palette-wrap');
 var dom_main_panel = $('.main-panel');
 var dom_main_palette = $('.main-palette');
-var dom_menu_palette = $('.menu-palette');
+var dom_full_palette = $('.full-palette');
 var dom_btn_trigger = $('.btn-trigger');
 var dom_slider_head = $('.slider-head');
 var dom_slider_bar = $('.slider-bar');
@@ -33,11 +33,11 @@ var dom_fps = $('.fps');
 var update_time_arr = [];
 
 function show_menu() {
-  dom_menu.addClass('active');
+  dom_full_palette_wrap.addClass('active');
 }
 
 function hide_menu() {
-  dom_menu.removeClass('active');
+  dom_full_palette_wrap.removeClass('active');
 }
 
 function set_main_panel(type) {
@@ -63,7 +63,7 @@ function update_main_palette(color_row_id) {
 
 function init_menu_palette() {
   for (var r = 0; r < colors.length; ++r) {
-    dom_menu_palette[0].innerHTML += gen_html_by_color_row_id(r);
+    dom_full_palette[0].innerHTML += gen_html_by_color_row_id(r);
   }
 }
 
@@ -101,7 +101,8 @@ function slider_head_on_move(event) {
   var x = Math.floor(event.clientX >= 0 ? event.clientX : event.touches[0].pageX);
 
   var index_to_size = [1, 4, 8, 16];
-  var index = Math.floor((x - slider_offset_left) / width_per_section);
+  var index = Math.floor((x - slider_offset_left + width_per_section / 2) / width_per_section);
+  index = Math.max(0, Math.min(index_to_size.length - 1, index));
   pen.set_size(index_to_size[index]);
   dom_slider_head.css('margin-left', width_per_section * index + 'px');
 }
@@ -109,7 +110,7 @@ function slider_head_on_move(event) {
 function init_events() {
   dom_btn_trigger.on('click', btn_trigger_on_click);
   $('body').delegate('.palette-color', 'click', btn_color_on_click);
-  dom_menu_palette.find('.palette-color').first().click();
+  dom_full_palette.find('.palette-color').first().click();
   function preventDefault(e) {
     e.stopPropagation();
     e.preventDefault();

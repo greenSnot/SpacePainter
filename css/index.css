@@ -116,38 +116,38 @@ body{
 
 .palette-color-row {
   height: 50px;
-  overflow-x: scroll;
-  overflow-y: hidden;
+  overflow: hidden;
   display: flex;
   justify-content: space-around;
 }
 
-.menu {
+.full-palette-wrap {
   position: fixed;
   width: 100%;
+  padding-right: 50px;
+  box-sizing: border-box;
   top: 100%;
   left: 0;
-  height: 300px;
+  height: 200px;
   visibility: hidden;
   opacity: 0.1;
   display: flex;
   transition: all 0.3s ease-in-out;
 }
-.menu-tabs {
-  width: 50px;
-}
-.menu.active {
+.full-palette-wrap.active {
   opacity: 1;
   visibility: visible;
-  margin-top: -350px;
+  margin-top: -250px;
 }
-.menu-palette {
+.full-palette {
   height: 100%;
   overflow-y: scroll;
 }
-.menu-buttons {
+.buttons-wrap {
+  position: fixed;
+  bottom: 50px;
+  right: 0px;
   width: 50px;
-  height: 100%;
 }
 
 .pen-size-slider {
@@ -163,10 +163,10 @@ body{
 }
 
 .slider-bar {
-  width: 90%;
+  margin: 0 6px 0 6px;
   height: 4px;
   border-radius: 3px;
-  background: #e2e2e2;
+  background: #f7f5f5;
   position: relative;
 }
 
@@ -177,7 +177,7 @@ body{
   border-radius: 3px;
   background: #fff;
   margin-top: 2px;
-  box-shadow: 0px 0px 3px;
+  box-shadow: 0px 0px 3px #666;
   transform: translateX(-50%) translateY(-50%);
 }
 
@@ -210,20 +210,21 @@ body{
 }
 
 .icon-scale-wrap {
-  width: 70px;
+  width: 58px;
 }
 
 .icon-scale {
-  width: 30px;
+  width: 12px;
   height: 3px;
   position: relative;
+  transform: translateX(-50%);
   background: #f4a3a3;
 }
 .icon-scale:before {
   content: '';
   display: inline-block;
   height: 1px;
-  width: 100%;
+  width: 50%;
   background: #f4a3a3;
   position: absolute;
   top: -7px;
@@ -234,7 +235,7 @@ body{
   height: 5px;
   background: #f4a3a3;
   position: absolute;
-  width: 100%;
+  width: 200%;
   top: 7px;
 }
 
@@ -248,5 +249,5 @@ body{
 .scale {
   width: 2px;
   height: 6px;
-  background: #b1b1b1;
+  background: #d4d4d4;
 }
