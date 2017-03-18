@@ -1,9 +1,12 @@
 var snot = require('../libs/snot.js/build/js/snot_webgl_renderer.min.js');
 var gui = require('./gui.js');
+var storage = require('./storage.js');
 var util = snot.util;
 var THREE = snot.THREE;
 
 import { Pen } from './pen.js';
+var set_color_by_point = require('./faces.js').set_color_by_point;
+var init_faces = require('./faces.js').init;
 
 var NET_SIZE = 100;
 var NET_DIVISION = 5;
@@ -11,31 +14,10 @@ var NET_DIVISION = 5;
 var pen = new Pen(0, 1, 0.6);
 pen.set_random_color_range(0.1);
 
-var triangle_net;
-var triangle_net_kd;
-
-function set_face_color(face, color) {
-  var index = face.index;
-  var arr = triangle_net.geometry.attributes.color.array;
-  for (var i = 0; i < 9; i += 3) {
-    arr[index + i] = color.r;
-    arr[index + i + 1] = color.g;
-    arr[index + i + 2] = color.b;
-  }
-  triangle_net.geometry.attributes.color.needsUpdate = true;
-}
-
-function set_color_by_point(point, color) {
-  var neighbors = triangle_net_kd.nearest(point, pen.size);
-
-  for (var j = 0; j < neighbors.length; ++j) {
-    set_face_color(neighbors[j][0], pen.get_color());
-  }
-}
 
 function on_touch_move(e, x, y) {
   e.preventDefault();
-  set_color_by_point(snot.raycaster_point_from_mouse(x, y, NET_SIZE), pen.get_color());
+  set_color_by_point(snot.raycaster_point_from_mouse(x, y, NET_SIZE), pen);
 }
 
 function raycaster_compute(x, y) {
@@ -52,11 +34,12 @@ function on_touch_start(e, x, y) {
   if (e.touches.length > 1) {
     return;
   }
-  set_color_by_point(snot.raycaster_point_from_mouse(x, y, NET_SIZE), pen.get_color());
+  set_color_by_point(snot.raycaster_point_from_mouse(x, y, NET_SIZE), pen);
 }
 
 function on_touch_end(e) {
   e.preventDefault();
+  storage.store();
 }
 
 snot.init({
@@ -72,6 +55,7 @@ snot.init({
   on_touch_move: on_touch_move,
   fisheye_offset: - 30,
   on_touch_start: on_touch_start,
+  on_touch_end: on_touch_end,
   raycaster_on_touch_move: false,
   raycaster_on_touch_start: false,
   raycaster_on_touch_end: false,
@@ -80,7 +64,7 @@ snot.init({
       id: 'triangle_net',
       mesh_generator: function () {
         var geo = new THREE.IcosahedronBufferGeometry(NET_SIZE, NET_DIVISION);
-        triangle_net = new THREE.Mesh(
+        var triangle_net = new THREE.Mesh(
           geo,
           new THREE.MeshBasicMaterial({color: 0xffffff, vertexColors: THREE.VertexColors, side: THREE.DoubleSide})
         );
@@ -112,9 +96,10 @@ snot.init({
         for (var k = 0; k < geo.attributes.position.array.length; ++k) {
           geo.attributes.color.array[k] = 1;
         }
-        triangle_net_kd = new util.kd_tree(faces, function(a, b) {
+        var triangle_net_kd = new util.kd_tree(faces, function(a, b) {
           return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2) + Math.pow(a.z - b.z, 2);
         }, ['x', 'y', 'z']);
+        init_faces(triangle_net, triangle_net_kd);
         return triangle_net;
       },
       x: 0,

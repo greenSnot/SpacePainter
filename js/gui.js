@@ -4,6 +4,7 @@ var util = snot.util;
 var fast_click = require('fastclick');
 var template = require('./art-template.js');
 var $ = require('npm-zepto');
+var storage = require('./storage.js');
 template.config('openTag', '<#');
 template.config('closeTag', '#>');
 fast_click(document.body);
@@ -26,6 +27,9 @@ var dom_main_panel = $('.main-panel');
 var dom_main_palette = $('.main-palette');
 var dom_full_palette = $('.full-palette');
 var dom_btn_trigger = $('.btn-trigger');
+var dom_btn_save = $('.btn-save');
+var dom_btn_redo = $('.btn-redo');
+var dom_btn_undo = $('.btn-undo');
 var dom_slider_head = $('.slider-head');
 var dom_slider_bar = $('.slider-bar');
 
@@ -125,6 +129,24 @@ function init_events() {
   $('body').on('touchstart', preventDefault);
 
   dom_slider_head.on('touchmove', slider_head_on_move);
+
+  dom_btn_redo.on('click', function() {
+    if ($(this).hasClass('active')) {
+      storage.redo();
+    }
+  });
+
+  dom_btn_undo.on('click', function() {
+    if ($(this).hasClass('active')) {
+      storage.undo();
+    }
+  });
+
+  dom_btn_save.on('click', function() {
+    if ($(this).hasClass('active')) {
+      storage.save();
+    }
+  });
 }
 
 function init(_pen) {
