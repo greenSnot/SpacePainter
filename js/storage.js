@@ -2,13 +2,20 @@ var $ = require('npm-zepto');
 var THREE = require('three');
 var set_color_by_index = require('./faces.js').set_color_by_index;
 var get_triangle_net = require('./faces.js').get_triangle_net;
+var lzw_compress = require('lzwcompress');
 
 var face_color_stack = [];
 var cur_stack_index = -1;
 
-var dom_btn_save = $('.btn-save');
-var dom_btn_redo = $('.btn-redo');
-var dom_btn_undo = $('.btn-undo');
+var dom_btn_save;
+var dom_btn_redo;
+var dom_btn_undo;
+
+function init() {
+  dom_btn_save = $('.btn-save');
+  dom_btn_redo = $('.btn-redo');
+  dom_btn_undo = $('.btn-undo');
+}
 
 function update_undo_redo_btn() {
   if (cur_stack_index >= 0) {
@@ -81,9 +88,9 @@ function update_faces_by_stack_index(index) {
 }
 
 function save() {
-  //TODO
   var name = prompt('work name');
-
+  var compressed = lzw_compress.pack(face_color_stack[cur_stack_index]);
+  //TODO
 }
 
 module.exports = {
@@ -91,4 +98,5 @@ module.exports = {
   undo: undo,
   redo: redo,
   save: save,
+  init: init,
 };

@@ -5,6 +5,7 @@ var fast_click = require('fastclick');
 var template = require('./art-template.js');
 var $ = require('npm-zepto');
 var storage = require('./storage.js');
+var page = require('./page.js');
 template.config('openTag', '<#');
 template.config('closeTag', '#>');
 fast_click(document.body);
@@ -22,18 +23,19 @@ var colors = [
   [0.4, 0.4],
 ];
 
-var dom_full_palette_wrap = $('.full-palette-wrap');
-var dom_main_panel = $('.main-panel');
-var dom_main_palette = $('.main-palette');
-var dom_full_palette = $('.full-palette');
-var dom_btn_trigger = $('.btn-trigger');
-var dom_btn_save = $('.btn-save');
-var dom_btn_redo = $('.btn-redo');
-var dom_btn_undo = $('.btn-undo');
-var dom_slider_head = $('.slider-head');
-var dom_slider_bar = $('.slider-bar');
+var dom_full_palette_wrap;
+var dom_main_panel;
+var dom_main_palette;
+var dom_full_palette;
+var dom_btn_trigger;
+var dom_btn_save;
+var dom_btn_redo;
+var dom_btn_undo;
+var dom_btn_discovery;
+var dom_slider_head;
+var dom_slider_bar;
 
-var dom_fps = $('.fps');
+var dom_fps;
 var update_time_arr = [];
 
 function show_full_palette() {
@@ -142,6 +144,10 @@ function init_events() {
     }
   });
 
+  dom_btn_discovery.on('click', function() {
+    page.active('discovery');
+  });
+
   dom_btn_save.on('click', function() {
     if ($(this).hasClass('active')) {
       storage.save();
@@ -149,7 +155,25 @@ function init_events() {
   });
 }
 
+function init_selector() {
+  dom_full_palette_wrap = $('.full-palette-wrap');
+  dom_main_panel = $('.main-panel');
+  dom_main_palette = $('.main-palette');
+  dom_full_palette = $('.full-palette');
+  dom_btn_trigger = $('.btn-trigger');
+  dom_btn_save = $('.btn-save');
+  dom_btn_redo = $('.btn-redo');
+  dom_btn_undo = $('.btn-undo');
+  dom_btn_discovery = $('.btn-discovery');
+  dom_slider_head = $('.slider-head');
+  dom_slider_bar = $('.slider-bar');
+  
+  dom_fps = $('.fps');
+}
+
+
 function init(_pen) {
+  init_selector();
   pen = _pen;
 
   init_full_palette();

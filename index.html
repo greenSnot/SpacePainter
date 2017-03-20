@@ -5,43 +5,48 @@
   <meta name="author" content="greenSnot@github">
   <meta http-equiv="pragma" content="no-cache">
   <head>
-    <link rel="stylesheet" type="text/css" href="./libs/snot.js/build/css/snot.min.css">
     <link rel="stylesheet" type="text/css" href="./build/css/index.min.css">
   </head>
   <body>
-    <div id="snot-wrap">
-      <div id="snot-container">
-      </div>
-    </div>
-    <div class="fps"></div>
-    <div class="full-palette-wrap h-flex">
-      <div class="full-palette flex1"></div>
-    </div>
-    <div class="buttons-wrap">
-      <div class="btn-save"></div>
-      <div class="btn-redo"></div>
-      <div class="btn-undo"></div>
-      <div class="btn-setting"></div>
-    </div>
-    <div class="main-panel h-flex v-center" data-active-panel="palette">
-      <div class="main-palette flex1">
-      </div>
-      <div class="pen-size-slider h-flex v-center flex1">
-        <div class="icon-scale-wrap vh-center">
-          <div class="icon-scale">
-          </div>
-        </div>
-        <div class="slider-bar flex1">
-          <div class="scales h-flex">
-            <div class="scale"></div>
-            <div class="scale"></div>
-            <div class="scale"></div>
-            <div class="scale"></div>
-          </div>
-          <div class="slider-head"></div>
+    <div class="page" data-page="editor">
+      <div class="viewer-wrap main">
+        <div class="viewer-container main">
         </div>
       </div>
-      <div class="btn-trigger vh-center"></div>
+      <div class="fps"></div>
+      <div class="full-palette-wrap h-flex">
+        <div class="full-palette flex1"></div>
+      </div>
+      <div class="buttons-wrap">
+        <div class="btn-save"></div>
+        <div class="btn-redo"></div>
+        <div class="btn-undo"></div>
+        <div class="btn-setting"></div>
+      </div>
+      <div class="btn-discovery">discovery</div>
+      <div class="main-panel h-flex v-center" data-active-panel="palette">
+        <div class="main-palette flex1">
+        </div>
+        <div class="pen-size-slider h-flex v-center flex1">
+          <div class="icon-scale-wrap vh-center">
+            <div class="icon-scale">
+            </div>
+          </div>
+          <div class="slider-bar flex1">
+            <div class="scales h-flex">
+              <div class="scale"></div>
+              <div class="scale"></div>
+              <div class="scale"></div>
+              <div class="scale"></div>
+            </div>
+            <div class="slider-head"></div>
+          </div>
+        </div>
+        <div class="btn-trigger vh-center"></div>
+      </div>
+    </div>
+    <div class="page" data-page="discovery">
+      <button class="btn-test">test</button>
     </div>
     <script id="template-btn-color" type="text/html">
       <div class="palette-color <#=selected ? 'selected' : ''#>" style="background:#<#=color#>;border:1px solid #<#=border_color#>;" data-color="<#=color#>">
