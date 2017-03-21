@@ -6,8 +6,6 @@ var template = require('./art-template.js');
 var $ = require('npm-zepto');
 var storage = require('./storage.js');
 var page = require('./page.js');
-template.config('openTag', '<#');
-template.config('closeTag', '#>');
 fast_click(document.body);
 
 var pen;
@@ -118,41 +116,40 @@ function slider_head_on_move(event) {
   dom_slider_head.css('margin-left', width_per_section * index + 'px');
 }
 
-function init_events() {
+function btn_save_on_click() {
+  if ($(this).hasClass('active')) {
+    storage.save();
+  }
+}
+
+function btn_discovery_on_click() {
+  page.active({
+    page: 'discovery'
+  });
+}
+
+function btn_undo_on_click() {
+  if ($(this).hasClass('active')) {
+    storage.undo();
+  }
+}
+
+function btn_redo_on_click() {
+  if ($(this).hasClass('active')) {
+    storage.redo();
+  }
+}
+
+function start_listeners() {
   dom_btn_trigger.on('click', btn_trigger_on_click);
   $('body').delegate('.palette-color', 'click', btn_color_on_click);
-  dom_full_palette.find('.palette-color').first().click();
-  function preventDefault(e) {
-    e.stopPropagation();
-    e.preventDefault();
-  }
-  $('body').on('touchmove', preventDefault);
-  $('body').on('touchend', preventDefault);
-  $('body').on('touchstart', preventDefault);
 
   dom_slider_head.on('touchmove', slider_head_on_move);
 
-  dom_btn_redo.on('click', function() {
-    if ($(this).hasClass('active')) {
-      storage.redo();
-    }
-  });
-
-  dom_btn_undo.on('click', function() {
-    if ($(this).hasClass('active')) {
-      storage.undo();
-    }
-  });
-
-  dom_btn_discovery.on('click', function() {
-    page.active('discovery');
-  });
-
-  dom_btn_save.on('click', function() {
-    if ($(this).hasClass('active')) {
-      storage.save();
-    }
-  });
+  dom_btn_redo.on('click', btn_redo_on_click);
+  dom_btn_undo.on('click', btn_undo_on_click);
+  dom_btn_discovery.on('click', btn_discovery_on_click);
+  dom_btn_save.on('click', btn_save_on_click);
 }
 
 function init_selector() {
@@ -173,11 +170,17 @@ function init_selector() {
 
 
 function init(_pen) {
+  update_time_arr = [];
   init_selector();
   pen = _pen;
 
   init_full_palette();
-  init_events();
+  start_listeners();
+
+  // TODO
+  // Do it twice otherwise it won't be work.
+  dom_full_palette.find('.palette-color').first().trigger('click');
+  dom_full_palette.find('.palette-color').first().trigger('click');
 }
 
 function update_fps() {
@@ -192,7 +195,20 @@ function update_fps() {
   dom_fps.text(update_time_arr.length);
 }
 
+function stop_listeners() {
+  $('body').undelegate('.palette-color', 'click', btn_color_on_click);
+
+  dom_btn_trigger.off('click');
+  dom_slider_head.off('touchmove');
+  dom_btn_redo.off('click');
+  dom_btn_undo.off('click');
+  dom_btn_discovery.off('click');
+  dom_btn_save.off('click');
+}
+
 module.exports = {
   update_fps: update_fps,
   init: init,
+  stop_listeners: stop_listeners,
+  start_listeners: start_listeners,
 };

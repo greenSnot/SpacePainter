@@ -1,4 +1,23 @@
+var template = require('./art-template.js');
+template.config('openTag', '<#');
+template.config('closeTag', '#>');
 var pages;
+
+function init() {
+  pages = {
+    editor: require('./editor.js'),
+    discovery: require('./discovery.js')
+  };
+  for (var i in pages) {
+    pages[i].init();
+  }
+
+  window.addEventListener('popstate', function(event) {
+    if (event.state) {
+      active(event.state);
+    }
+  }, false);
+}
 
 function pause(page_name) {
   $('.page[data-page=' + page_name + ']').removeClass('active');
@@ -25,12 +44,13 @@ function url_code_to_json(u) {
   return query;
 }
 
-function active(page_name, data) {
+function active(data) {
+  var page_name = data.page;
   data = data || {};
   pause_active_page();
   $('.page[data-page=' + page_name + ']').addClass('active');
   pages[page_name].active();
-  history.pushState(data, undefined, '/#page=' + page_name + '&' + json_to_url_code(data));
+  history.pushState(data, undefined, '/#' + json_to_url_code(data));
 }
 
 function pause_active_page() {
@@ -38,26 +58,6 @@ function pause_active_page() {
     var active_page = $('.page.active').attr('data-page');
     pause(active_page);
   }
-}
-
-function init() {
-  pages = {
-    editor: require('./editor.js'),
-    discovery: require('./discovery.js')
-  };
-  for (var i in pages) {
-    pages[i].init();
-  }
-  (function(history) {
-    var pushState = history.pushState;
-    history.pushState = function(state) {
-      if (typeof history.onpushstate == "function") {
-        history.onpushstate({state: state});
-      }
-      // maybe call onhashchange e.handler
-      return pushState.apply(history, arguments);
-    };
-  })(window.history);
 }
 
 module.exports = {
