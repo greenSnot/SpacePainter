@@ -155,12 +155,15 @@ function init_viewer() {
   });
 }
 
-function active() {
+function active(data) {
   gui.init(pen);
   storage.init();
   pause_flag = false;
   update();
   snot.start_listeners();
+  if (data.filename) {
+    storage.load_from_filename(data.filename);
+  }
 }
 
 function init() {

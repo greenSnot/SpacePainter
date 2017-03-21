@@ -368,3 +368,9 @@ body {
     -webkit-transform: scale(0.9);
   }
 }
+
+.work-preview {
+  background: #f0f;
+  width: 30px;
+  height: 30px;
+}

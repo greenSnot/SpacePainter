@@ -3,6 +3,9 @@ var THREE = require('three');
 var set_color_by_index = require('./faces.js').set_color_by_index;
 var get_triangle_net = require('./faces.js').get_triangle_net;
 var lzw_compress = require('lzwcompress');
+var request = require('./request.js');
+var user = require('./user.js');
+var config = require('./config.js');
 
 var face_color_stack = [];
 var cur_stack_index = -1;
@@ -88,9 +91,23 @@ function update_faces_by_stack_index(index) {
 }
 
 function save() {
-  var name = prompt('work name');
+  var name = 'test'+ Math.random();
   var compressed = lzw_compress.pack(face_color_stack[cur_stack_index]);
-  //TODO
+  var base64 = btoa(JSON.stringify(compressed));
+  user.upload_work(base64, name).then(function(result) {
+    //TODO
+    alert('success');
+  });
+}
+
+function load_from_filename(filename) {
+  var url = config.cdn_works_path + filename;
+  $.get(url, function(res) {
+    var data = lzw_compress.unpack(JSON.parse(res));
+    face_color_stack.push(data);
+    cur_stack_index = face_color_stack.length - 1;
+    update_faces_by_stack_index(cur_stack_index);
+  });
 }
 
 module.exports = {
@@ -99,4 +116,5 @@ module.exports = {
   redo: redo,
   save: save,
   init: init,
+  load_from_filename: load_from_filename,
 };

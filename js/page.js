@@ -1,4 +1,5 @@
 var template = require('./art-template.js');
+var config = require('./config.js');
 template.config('openTag', '<#');
 template.config('closeTag', '#>');
 var pages;
@@ -49,8 +50,8 @@ function active(data, replace) {
   data = data || {};
   pause_active_page();
   $('.page[data-page=' + page_name + ']').addClass('active');
-  pages[page_name].active();
-  history.pushState(data, undefined, '/#' + json_to_url_code(data));
+  pages[page_name].active(data);
+  history.pushState(data, undefined, '#' + json_to_url_code(data));
 }
 
 function pause_active_page() {

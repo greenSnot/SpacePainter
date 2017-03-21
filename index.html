@@ -48,6 +48,8 @@
     </div>
     <div class="page" data-page="discovery">
       <button class="btn-test">test</button>
+      <div class="works-wrap">
+      </div>
     </div>
     <script id="template-btn-color" type="text/html">
       <div class="palette-color <#=selected ? 'selected' : ''#>" style="background:#<#=color#>;border:1px solid #<#=border_color#>;" data-color="<#=color#>">
@@ -62,6 +64,12 @@
           <# var selected = i == selected_index; #>
           <# include('template-btn-color', { color: color, border_color: border_color, selected: selected}) #>
         <#}#>
+      </div>
+    </script>
+    <script id="template-discovery-work" type="text/html">
+      <div class="work-item" data-id="<#=id#>" data-filename="<#=filename#>">
+        <div class="work-preview"></div>
+        <div class="work-name"><#=work_name#></div>
       </div>
     </script>
     <script src="js/index.min.js"></script>
