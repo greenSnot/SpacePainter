@@ -1,6 +1,7 @@
 var $ = require('npm-zepto');
 var page = require('./page.js');
 var loading = require('./loading.js');
+var user = require('./user.js');
 
 page.init();
 
@@ -10,4 +11,6 @@ var query = page.url_code_to_json(path_appendix);
 query.page = query.page || 'discovery';
 page.active(query);
 
-loading.hide();
+user.request_user_basic_info().then(function() {
+  loading.hide();
+});

@@ -2,3 +2,5 @@ build
 node_modules
 config/local.js
 config/merged.js
+js/config.js
+config.py

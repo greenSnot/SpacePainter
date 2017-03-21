@@ -90,6 +90,7 @@ function js() {
 
 let task_2_files = {
   hint: ['./js/**/*.js'],
+  html: ['./*.html'],
   js: ['./js/**/*.js'],
   css: ['./css/*.css'],
   images: ['./images/*.*'],
@@ -131,6 +132,15 @@ function css() {
   return make_css_stream(css_files, 'index.css');
 }
 
+function html() {
+  do_watch('html');
+
+  let s = [];
+  s.push(gulp.src(['./*.html']));
+  s.push(gulp.dest('./build/'));
+  return taskify_stream(s);
+}
+
 function images() {
   do_watch('images');
 
@@ -149,8 +159,9 @@ function config() {
 
 gulp.task('config', config);
 gulp.task('css', css);
+gulp.task('html', html);
 gulp.task('images', images);
 gulp.task('hint', hint);
 gulp.task('js', ['config'], js);
 
-gulp.task('default', ['hint', 'css', 'images', 'js']);
+gulp.task('default', ['hint', 'css', 'images', 'js', 'html']);
