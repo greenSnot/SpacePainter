@@ -44,7 +44,7 @@ function url_code_to_json(u) {
   return query;
 }
 
-function active(data) {
+function active(data, replace) {
   var page_name = data.page;
   data = data || {};
   pause_active_page();
