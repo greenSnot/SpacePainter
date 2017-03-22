@@ -6,6 +6,7 @@ var lzw_compress = require('lzwcompress');
 var request = require('./request.js');
 var user = require('./user.js');
 var config = require('./config.js');
+var loading = require('./loading.js');
 
 var face_color_stack = [];
 var cur_stack_index = -1;
@@ -94,19 +95,23 @@ function save() {
   var name = 'test'+ Math.random();
   var compressed = lzw_compress.pack(face_color_stack[cur_stack_index]);
   var base64 = btoa(JSON.stringify(compressed));
+  loading.show();
   user.upload_work(base64, name).then(function(result) {
+    loading.hide();
     //TODO
-    alert('success');
+    //alert('success');
   });
 }
 
 function load_from_filename(filename) {
   var url = config.cdn_works_path + filename;
+  loading.show();
   $.get(url, function(res) {
     var data = lzw_compress.unpack(JSON.parse(res));
     face_color_stack.push(data);
     cur_stack_index = face_color_stack.length - 1;
     update_faces_by_stack_index(cur_stack_index);
+    loading.hide();
   });
 }
 

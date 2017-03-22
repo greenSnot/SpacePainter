@@ -5,7 +5,7 @@ var user = require('./user.js');
 
 page.init();
 
-var path_appendix = location.href.split('#')[1];
+var path_appendix = location.href.split('?')[1];
 var query = page.url_code_to_json(path_appendix);
 
 query.page = query.page || 'discovery';

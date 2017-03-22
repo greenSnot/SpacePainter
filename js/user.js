@@ -11,23 +11,18 @@ function get_user_basic_info() {
 function request_user_basic_info() {
   return new Promise(function(resolve, reject) {
     post(config.get_wechat_info_url, {}).then(function(result) {
-      if (typeof(result) != 'object') {
-        result = JSON.parse(result);
-      }
+      console.log(result);
       if (result.code == -1) {
         post(config.get_wechat_redirect_code_url, {
           url: location.href
-        }, function(result) {
-          if (typeof(result) != 'object') {
-            result = JSON.parse(result);
-          }
+        }).then(function(result) {
+          console.log(result);
           if (result.code !== 0) {
             reject(result);
             return;
           }
           var callback_url = config.wechat_auth_callback_url;
           var redirect_code = result.data.redirect_code;
-
           location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + config.app_id + '&redirect_uri=' + encodeURI(callback_url) + '&response_type=code&scope=snsapi_userinfo&state=' + redirect_code + '#wechat_redirect';
         });
       } else if (result.code === 0) {
