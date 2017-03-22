@@ -32,7 +32,7 @@ function update_gui() {
   } else {
     dom_btn_redo.removeClass('active');
   }
-  if (face_color_.stack.length > 0) {
+  if (face_color_stack.length > 0) {
     dom_btn_save.addClass('active');
   } else {
     dom_btn_save.removeClass('active');
