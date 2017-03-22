@@ -87,13 +87,13 @@ body{
   height: 60px;
 }
 
-.btn-trigger {
+.btn-expand {
   width: 40px;
   height: 40px;
   margin-right: 10px;
   position: relative;
 }
-.btn-trigger:before, .btn-trigger:after {
+.btn-expand:before, .btn-expand:after {
   content: '';
   display: inline-block;
   width: 15px;
@@ -104,15 +104,15 @@ body{
   transform-origin: 100% 50%;
   transform: translateX(1px) translateY(-7px) rotateZ(-45deg);
 }
-.btn-trigger:after {
+.btn-expand:after {
   transform-origin: 0% 50%;
   transform: translateX(-1px) translateY(-7px) rotateZ(45deg);
 }
-.btn-trigger.active:before {
+.btn-expand.active:before {
   transform-origin: 100% 50%;
   transform: translateX(1px) translateY(7px) rotateZ(45deg);
 }
-.btn-trigger.active:after {
+.btn-expand.active:after {
   transform-origin: 0% 50%;
   transform: translateX(-1px) translateY(7px) rotateZ(-45deg);
 }
@@ -277,7 +277,7 @@ body{
   background: #d4d4d4;
 }
 
-.btn-undo, .btn-redo, .btn-save {
+.btn-undo, .btn-redo, .btn-save, .btn-auxiliary {
   width: 40px;
   height: 40px;
   margin-bottom: 10px;
@@ -285,7 +285,7 @@ body{
   display: inline-block;
 }
 
-.btn-undo.active, .btn-redo.active, .btn-save.active {
+.btn-undo.active, .btn-redo.active, .btn-save.active, .btn-auxiliary.active {
   opacity: 1;
 }
 
@@ -298,6 +298,10 @@ body{
 
 .btn-save:before {
   content: 'save';
+}
+
+.btn-auxiliary:before {
+  content: 'aux';
 }
 
 .viewer-wrap {

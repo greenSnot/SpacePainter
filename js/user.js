@@ -11,12 +11,10 @@ function get_user_basic_info() {
 function request_user_basic_info() {
   return new Promise(function(resolve, reject) {
     post(config.get_wechat_info_url, {}).then(function(result) {
-      console.log(result);
       if (result.code == -1) {
         post(config.get_wechat_redirect_code_url, {
           url: location.href
         }).then(function(result) {
-          console.log(result);
           if (result.code !== 0) {
             reject(result);
             return;

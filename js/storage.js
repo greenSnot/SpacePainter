@@ -21,7 +21,7 @@ function init() {
   dom_btn_undo = $('.btn-undo');
 }
 
-function update_undo_redo_btn() {
+function update_gui() {
   if (cur_stack_index >= 0) {
     dom_btn_undo.addClass('active');
   } else {
@@ -32,8 +32,11 @@ function update_undo_redo_btn() {
   } else {
     dom_btn_redo.removeClass('active');
   }
-  //TODO
-  dom_btn_save.addClass('active');
+  if (face_color_.stack.length > 0) {
+    dom_btn_save.addClass('active');
+  } else {
+    dom_btn_save.removeClass('active');
+  }
 }
 
 function store() {
@@ -55,31 +58,39 @@ function store() {
   face_color_stack.push(face_color);
 
   cur_stack_index = face_color_stack.length - 1;
-  update_undo_redo_btn();
+  update_gui();
 }
 
 function undo() {
   --cur_stack_index;
   if (cur_stack_index == -1) {
-    reset();
+    clean();
   } else {
     update_faces_by_stack_index(cur_stack_index);
   }
-  update_undo_redo_btn();
+  update_gui();
 }
 
 function redo() {
   ++cur_stack_index;
   update_faces_by_stack_index(cur_stack_index);
-  update_undo_redo_btn();
+  update_gui();
 }
 
-function reset() {
+function clean() {
   var color = new THREE.Color();
-  for (var i = 0; i < face_color_stack[0].length; ++i) {
+  var n_faces = get_triangle_net().geometry.attributes.color.array.length / 9;
+  for (var i = 0; i < n_faces; ++i) {
     color.setRGB(1, 1, 1);
     set_color_by_index(i * 9, color);
   }
+}
+
+function reset() {
+  clean();
+  cur_stack_index = -1;
+  face_color_stack = [];
+  update_gui();
 }
 
 function update_faces_by_stack_index(index) {
@@ -117,6 +128,8 @@ function load_from_filename(filename) {
 
 module.exports = {
   store: store,
+  clean: clean,
+  reset: reset,
   undo: undo,
   redo: redo,
   save: save,

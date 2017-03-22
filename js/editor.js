@@ -4,6 +4,7 @@ var storage = require('./storage.js');
 var util = snot.util;
 var THREE = snot.THREE;
 var $ = require('npm-zepto');
+var auxiliary = require('./auxiliary.js');
 
 import { Pen } from './pen.js';
 var set_color_by_point = require('./faces.js').set_color_by_point;
@@ -153,6 +154,7 @@ function init_viewer() {
       obj_auxiliary_sphere_net
     ]
   });
+  auxiliary.init(obj_auxiliary_triangle_net, obj_auxiliary_sphere_net);
 }
 
 function active(data) {
