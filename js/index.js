@@ -1,26 +1,29 @@
 var $ = require('npm-zepto');
+var template = require('art-template-native');
 var router = require('./router.js');
 var loading = require('./loading.js');
 var request = require('./request.js');
 var user = require('./user.js');
+var util = requrie('./util.js');
 
 request.get('main.html').then(function(result) {
   $('.main-html')[0].outerHTML = result;
   init();
 }).catch(function(e) {
-  reload();
+  location.reload();
 });
 
 function init() {
   loading.init();
   router.init();
 
+  template.config('openTag', '<#');
+  template.config('closeTag', '#>');
+
   var fast_click = require('fastclick');
   fast_click(document.body);
 
-  var path_appendix = location.href.split('?')[1];
-  var query = router.url_code_to_json(path_appendix);
-
+  var query = util.get_query_from_url();
   query.page = query.page || 'discovery';
   router.active(query);
 

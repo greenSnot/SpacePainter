@@ -119,11 +119,13 @@ function slider_head_on_move(event) {
 function btn_save_on_click() {
   if ($(this).hasClass('active')) {
     storage.save();
+    update_edit_gui();
   }
 }
 
 function btn_discovery_on_click() {
   storage.reset();
+  update_edit_gui();
   router.active({
     page: 'discovery'
   });
@@ -132,12 +134,14 @@ function btn_discovery_on_click() {
 function btn_undo_on_click() {
   if ($(this).hasClass('active')) {
     storage.undo();
+    update_edit_gui();
   }
 }
 
 function btn_redo_on_click() {
   if ($(this).hasClass('active')) {
     storage.redo();
+    update_edit_gui();
   }
 }
 
@@ -219,9 +223,30 @@ function stop_listeners() {
   dom_btn_save.off('click');
 }
 
+function update_edit_gui() {
+  var cur_stack_index = storage.get_cur_stack_index();
+  var face_color_stack = storage.get_face_color_stack();
+  if (cur_stack_index >= 0) {
+    dom_btn_undo.addClass('active');
+  } else {
+    dom_btn_undo.removeClass('active');
+  }
+  if (face_color_stack.length > 0 && face_color_stack.length - 1 != cur_stack_index) {
+    dom_btn_redo.addClass('active');
+  } else {
+    dom_btn_redo.removeClass('active');
+  }
+  if (face_color_stack.length > 0) {
+    dom_btn_save.addClass('active');
+  } else {
+    dom_btn_save.removeClass('active');
+  }
+}
+
 module.exports = {
   update_fps: update_fps,
   init: init,
+  update_edit_gui: update_edit_gui,
   stop_listeners: stop_listeners,
   start_listeners: start_listeners,
 };

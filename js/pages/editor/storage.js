@@ -10,34 +10,6 @@ var loading = require('../../loading.js');
 var face_color_stack = [];
 var cur_stack_index = -1;
 
-var dom_btn_save;
-var dom_btn_redo;
-var dom_btn_undo;
-
-function init() {
-  dom_btn_save = $('.btn-save');
-  dom_btn_redo = $('.btn-redo');
-  dom_btn_undo = $('.btn-undo');
-}
-
-function update_gui() {
-  if (cur_stack_index >= 0) {
-    dom_btn_undo.addClass('active');
-  } else {
-    dom_btn_undo.removeClass('active');
-  }
-  if (face_color_stack.length > 0 && face_color_stack.length - 1 != cur_stack_index) {
-    dom_btn_redo.addClass('active');
-  } else {
-    dom_btn_redo.removeClass('active');
-  }
-  if (face_color_stack.length > 0) {
-    dom_btn_save.addClass('active');
-  } else {
-    dom_btn_save.removeClass('active');
-  }
-}
-
 function store() {
   var i;
   // sweep up the stack whose index greater than cur_stack_index
@@ -57,7 +29,6 @@ function store() {
   face_color_stack.push(face_color);
 
   cur_stack_index = face_color_stack.length - 1;
-  update_gui();
 }
 
 function undo() {
@@ -67,13 +38,11 @@ function undo() {
   } else {
     update_faces_by_stack_index(cur_stack_index);
   }
-  update_gui();
 }
 
 function redo() {
   ++cur_stack_index;
   update_faces_by_stack_index(cur_stack_index);
-  update_gui();
 }
 
 function clean() {
@@ -89,7 +58,6 @@ function reset() {
   clean();
   cur_stack_index = -1;
   face_color_stack = [];
-  update_gui();
 }
 
 function update_faces_by_stack_index(index) {
@@ -126,6 +94,14 @@ function load_from_filename(filename) {
   });
 }
 
+function get_face_color_stack() {
+  return face_color_stack;
+}
+
+function get_cur_stack_index() {
+  return cur_stack_index;
+}
+
 module.exports = {
   store: store,
   clean: clean,
@@ -135,4 +111,6 @@ module.exports = {
   save: save,
   init: init,
   load_from_filename: load_from_filename,
+  get_face_color_stack: get_face_color_stack,
+  get_cur_stack_index: get_cur_stack_index,
 };

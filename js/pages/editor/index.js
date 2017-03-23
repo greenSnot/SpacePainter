@@ -44,6 +44,7 @@ function on_touch_start(e, x, y) {
 function on_touch_end(e) {
   e.preventDefault();
   storage.store();
+  gui.update_edit_gui();
 }
 
 function update() {
