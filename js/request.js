@@ -1,4 +1,5 @@
 var $ = require('npm-zepto');
+var config = require('./config.js');
 
 var post = function(url, data) {
   return new Promise(function(resolve, reject) {
@@ -18,6 +19,80 @@ var post = function(url, data) {
   });
 };
 
+var get = function(url) {
+  return new Promise(function(resolve, reject) {
+    $.ajax({
+      url: url,
+      type: 'GET',
+      xhrFields: {
+        withCredentials: true
+      },
+      timeout: 8000,
+      success: resolve,
+      error: reject
+    });
+  });
+};
+
+function wechat_login() {
+  post(config.get_wechat_redirect_code_url, {
+    url: location.href
+  }).then(function(result) {
+    if (result.code !== 0) {
+      reject(result);
+      return;
+    }
+    var callback_url = config.wechat_auth_callback_url;
+    var redirect_code = result.data.redirect_code;
+    location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + config.app_id + '&redirect_uri=' + encodeURI(callback_url) + '&response_type=code&scope=snsapi_userinfo&state=' + redirect_code + '#wechat_redirect';
+  });
+}
+
+function get_user_basic_info() {
+  return new Promise(function(resolve, reject) {
+    post(config.get_wechat_info_url, {}).then(function(result) {
+      if (result.code === 0) {
+        resolve(result.data);
+      } else {
+        reject(result);
+      }
+    });
+  });
+}
+
+function upload_work(work_base64, work_name) {
+  return new Promise(function(resolve, reject) {
+    post(config.get_work_upload_token_url, {
+      work_name: work_name,
+    }).then(function(res) {
+      if (res.code !== 0) {
+        reject(res.msg);
+        return;
+        //TODO
+      }
+      var token = res.data.token;
+      // TODO choose proper address automatically
+      //var url = 'http://upload.qiniu.com/putb64/-1';
+      var url = 'http://up-z2.qiniu.com/putb64/-1/key/' + btoa(res.data.key);
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function(){
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+          resolve(xhr.responseText);
+        }
+      };
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+      xhr.setRequestHeader('Authorization', 'UpToken ' + token);
+      xhr.send(work_base64);
+    });
+  });
+}
+
 module.exports = {
   post: post,
+  get: get,
+
+  upload_work: upload_work,
+  get_user_basic_info: get_user_basic_info,
+  wechat_login: wechat_login,
 };

@@ -117,7 +117,7 @@ function save() {
 function load_from_filename(filename) {
   var url = config.cdn_works_path + filename;
   loading.show();
-  $.get(url, function(res) {
+  request.get(url).then(function(res) {
     var data = lzw_compress.unpack(JSON.parse(res));
     face_color_stack.push(data);
     cur_stack_index = face_color_stack.length - 1;

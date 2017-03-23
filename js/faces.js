@@ -6,12 +6,16 @@ function init(tri, tri_kd) {
   triangle_net_kd = tri_kd;
 }
 
+function to_fixed(n) {
+  return n.toFixed(2);
+}
+
 function set_color_by_index(index, color) {
   var arr = triangle_net.geometry.attributes.color.array;
   for (var i = 0; i < 9; i += 3) {
-    arr[index + i] = color.r;
-    arr[index + i + 1] = color.g;
-    arr[index + i + 2] = color.b;
+    arr[index + i] = to_fixed(color.r);
+    arr[index + i + 1] = to_fixed(color.g);
+    arr[index + i + 2] = to_fixed(color.b);
   }
   triangle_net.geometry.attributes.color.needsUpdate = true;
 }

@@ -1,6 +1,11 @@
 var $ = require('npm-zepto');
 
-var dom = $('.loading');
+var dom;
+
+function init() {
+  dom = $('.loading');
+}
+
 function show() {
   dom.css('visibility', 'visible');
 }
@@ -10,6 +15,7 @@ function hide() {
 }
 
 module.exports = {
+  init: init,
   show: show,
   hide: hide,
 };
