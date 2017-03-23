@@ -1,8 +1,8 @@
-var page = require('./page.js');
-var config = require('./config.js');
-var loading = require('./loading.js');
-var request = require('./request.js');
-var template = require('./art-template.js');
+var router = require('../../router.js');
+var config = require('../../config.js');
+var loading = require('../../loading.js');
+var request = require('../../request.js');
+var template = require('art-template-native');
 
 function init() {
 }
@@ -13,7 +13,7 @@ function pause() {
 
 function active() {
   $('.btn-test').on('click', function() {
-    page.active({
+    router.active({
       page: 'editor'
     });
   });
@@ -35,7 +35,7 @@ function active() {
 
 function work_on_click(e) {
   var filename = $(this).attr('data-filename');
-  page.active({
+  router.active({
     page: 'editor',
     filename: filename
   });

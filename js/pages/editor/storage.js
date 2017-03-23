@@ -1,12 +1,11 @@
 var $ = require('npm-zepto');
 var THREE = require('three');
-var set_color_by_index = require('./faces.js').set_color_by_index;
-var get_triangle_net = require('./faces.js').get_triangle_net;
+var set_color_by_index = require('./mesh.js').set_color_by_index;
+var get_triangle_net = require('./mesh.js').get_triangle_net;
 var lzw_compress = require('lzwcompress');
-var request = require('./request.js');
-var user = require('./user.js');
-var config = require('./config.js');
-var loading = require('./loading.js');
+var request = require('../../request.js');
+var config = require('../../config.js');
+var loading = require('../../loading.js');
 
 var face_color_stack = [];
 var cur_stack_index = -1;
@@ -103,11 +102,12 @@ function update_faces_by_stack_index(index) {
 }
 
 function save() {
+  //TODO
   var name = 'test'+ Math.random();
   var compressed = lzw_compress.pack(face_color_stack[cur_stack_index]);
   var base64 = btoa(JSON.stringify(compressed));
   loading.show();
-  user.upload_work(base64, name).then(function(result) {
+  request.upload_work(base64, name).then(function(result) {
     loading.hide();
     //TODO
     //alert('success');

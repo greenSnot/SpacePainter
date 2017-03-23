@@ -1,13 +1,11 @@
 var THREE = require('three');
-var snot = require('../libs/snot.js/build/js/snot_webgl_renderer.min.js');
+var snot = require('snot.js');
 var util = snot.util;
-var fast_click = require('fastclick');
-var template = require('./art-template.js');
+var template = require('art-template-native');
 var $ = require('npm-zepto');
 var storage = require('./storage.js');
-var page = require('./page.js');
+var router = require('../../router.js');
 var auxiliary = require('./auxiliary.js');
-fast_click(document.body);
 
 var pen;
 var colors = [
@@ -126,7 +124,7 @@ function btn_save_on_click() {
 
 function btn_discovery_on_click() {
   storage.reset();
-  page.active({
+  router.active({
     page: 'discovery'
   });
 }

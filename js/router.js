@@ -1,4 +1,4 @@
-var template = require('./art-template.js');
+var template = require('art-template-native');
 var config = require('./config.js');
 template.config('openTag', '<#');
 template.config('closeTag', '#>');
@@ -6,8 +6,8 @@ var pages;
 
 function init() {
   pages = {
-    editor: require('./editor.js'),
-    discovery: require('./discovery.js')
+    editor: require('./pages/editor'),
+    discovery: require('./pages/discovery')
   };
   for (var i in pages) {
     pages[i].init();

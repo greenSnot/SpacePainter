@@ -1,5 +1,5 @@
 var $ = require('npm-zepto');
-var page = require('./page.js');
+var router = require('./router.js');
 var loading = require('./loading.js');
 var request = require('./request.js');
 var user = require('./user.js');
@@ -8,29 +8,21 @@ request.get('main.html').then(function(result) {
   $('.main-html')[0].outerHTML = result;
   init();
 }).catch(function(e) {
-  // TODO
+  reload();
 });
 
 function init() {
   loading.init();
-  page.init();
+  router.init();
 
-  function load_main_html(file, callback) {
-    var _doc = document.getElementsByTagName('head')[0];
-    var js = document.createElement('script');
-    js.setAttribute('type', 'text/javascript');
-    js.setAttribute('src', file);
-    _doc.appendChild(js);
-    js.onload = function () {
-      callback();
-    };
-  }
+  var fast_click = require('fastclick');
+  fast_click(document.body);
 
   var path_appendix = location.href.split('?')[1];
-  var query = page.url_code_to_json(path_appendix);
+  var query = router.url_code_to_json(path_appendix);
 
   query.page = query.page || 'discovery';
-  page.active(query);
+  router.active(query);
 
   user.init().then(function() {
     loading.hide();
@@ -39,7 +31,7 @@ function init() {
       request.wechat_login();
     } else {
       // TODO
-        alert(e.msg);
+      alert(e.msg);
     }
   });
 }

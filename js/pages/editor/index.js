@@ -1,4 +1,4 @@
-var snot = require('../libs/snot.js/build/js/snot_webgl_renderer.min.js');
+var snot = require('snot.js');
 var gui = require('./gui.js');
 var storage = require('./storage.js');
 var util = snot.util;
@@ -7,8 +7,8 @@ var $ = require('npm-zepto');
 var auxiliary = require('./auxiliary.js');
 
 import { Pen } from './pen.js';
-var set_color_by_point = require('./faces.js').set_color_by_point;
-var init_faces = require('./faces.js').init;
+var set_color_by_point = require('./mesh.js').set_color_by_point;
+var init_mesh = require('./mesh.js').init;
 
 var NET_SIZE = 100;
 var NET_DIVISION = 5;
@@ -94,7 +94,7 @@ function init_viewer() {
       var triangle_net_kd = new util.kd_tree(faces, function(a, b) {
         return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2) + Math.pow(a.z - b.z, 2);
       }, ['x', 'y', 'z']);
-      init_faces(triangle_net, triangle_net_kd);
+      init_mesh(triangle_net, triangle_net_kd);
       return triangle_net;
     },
     x: 0,
