@@ -1,8 +1,8 @@
-var snot = require('snot.js');
+var Snot = require('snot.js');
 var gui = require('./gui.js');
 var storage = require('./storage.js');
-var util = snot.util;
-var THREE = snot.THREE;
+var util = Snot.util;
+var THREE = Snot.THREE;
 var $ = require('npm-zepto');
 var auxiliary = require('./auxiliary.js');
 
@@ -18,15 +18,16 @@ pen.set_random_color_range(0.1);
 
 var pause_flag = true;
 
+var viewer;
 
 function on_touch_move(e, x, y) {
   e.preventDefault();
-  set_color_by_point(snot.raycaster_point_from_mouse(x, y, NET_SIZE), pen);
+  set_color_by_point(viewer.raycaster_point_from_mouse(x, y, NET_SIZE), pen);
 }
 
 function raycaster_compute(x, y) {
-  var intersects = snot.raycaster.intersectObjects(snot.suspects_for_raycaster);
-  var point = util.standardlization(intersects[0].point, snot.clicks_depth);
+  var intersects = viewer.raycaster.intersectObjects(viewer.suspects_for_raycaster);
+  var point = util.standardlization(intersects[0].point, viewer.clicks_depth);
   return {
     point: point,
     intersects: intersects
@@ -38,7 +39,7 @@ function on_touch_start(e, x, y) {
   if (e.touches.length > 1) {
     return;
   }
-  set_color_by_point(snot.raycaster_point_from_mouse(x, y, NET_SIZE), pen);
+  set_color_by_point(viewer.raycaster_point_from_mouse(x, y, NET_SIZE), pen);
 }
 
 function on_touch_end(e) {
@@ -50,7 +51,7 @@ function on_touch_end(e) {
 function update() {
   if (!pause_flag) {
     gui.update_fps();
-    snot.update();
+    viewer.update();
     requestAnimationFrame(update);
   }
 }
@@ -130,7 +131,7 @@ function init_viewer() {
     z: 0
   };
 
-  snot.init({
+  viewer = new Snot({
     dom: $('.viewer-wrap.main')[0],
     container: $('.viewer-container.main')[0],
     size: 1024,
@@ -160,10 +161,9 @@ function init_viewer() {
 
 function active(data) {
   gui.init(pen);
-  storage.init();
   pause_flag = false;
   update();
-  snot.start_listeners();
+  viewer.start_listeners();
   if (data.filename) {
     storage.load_from_filename(data.filename);
   }
@@ -176,12 +176,12 @@ function init() {
 function pause() {
   pause_flag = true;
   gui.stop_listeners();
-  snot.stop_listeners();
+  viewer.stop_listeners();
 }
 
 function dispose() {
   gui.stop_listeners();
-  snot.stop_listeners();
+  viewer.stop_listeners();
   pause_flag = true;
   var page_name = 'editor';
   $('.page[data-page=' + page_name + ']').html('');

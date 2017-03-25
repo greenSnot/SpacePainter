@@ -109,7 +109,6 @@ module.exports = {
   undo: undo,
   redo: redo,
   save: save,
-  init: init,
   load_from_filename: load_from_filename,
   get_face_color_stack: get_face_color_stack,
   get_cur_stack_index: get_cur_stack_index,

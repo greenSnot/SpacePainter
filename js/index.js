@@ -4,12 +4,13 @@ var router = require('./router.js');
 var loading = require('./loading.js');
 var request = require('./request.js');
 var user = require('./user.js');
-var util = requrie('./util.js');
+var util = require('./util.js');
 
 request.get('main.html').then(function(result) {
   $('.main-html')[0].outerHTML = result;
   init();
 }).catch(function(e) {
+  console.error(e);
   location.reload();
 });
 
