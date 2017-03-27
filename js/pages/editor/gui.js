@@ -5,8 +5,8 @@ var template = require('art-template-native');
 var $ = require('npm-zepto');
 var storage = require('./storage.js');
 var router = require('../../router.js');
-var auxiliary = require('./auxiliary.js');
 
+var viewer;
 var pen;
 var colors = [
   [0, 0.8],
@@ -148,10 +148,10 @@ function btn_redo_on_click() {
 function btn_auxiliary_on_click() {
   if ($(this).hasClass('active')) {
     $(this).removeClass('active');
-    auxiliary.hide();
+    viewer.auxiliary.hide();
   } else {
     $(this).addClass('active');
-    auxiliary.show();
+    viewer.auxiliary.show();
   }
 }
 
@@ -185,7 +185,8 @@ function init_selector() {
 }
 
 
-function init(_pen) {
+function init(v, _pen) {
+  viewer = v;
   update_time_arr = [];
   init_selector();
   pen = _pen;
@@ -225,22 +226,19 @@ function stop_listeners() {
 
 function update_edit_gui() {
   var cur_stack_index = storage.get_cur_stack_index();
-  var face_color_stack = storage.get_face_color_stack();
-  if (cur_stack_index >= 0) {
+  var faces_data_stack = storage.get_faces_data_stack();
+  if (cur_stack_index > 0) {
     dom_btn_undo.addClass('active');
   } else {
     dom_btn_undo.removeClass('active');
   }
-  if (face_color_stack.length > 0 && face_color_stack.length - 1 != cur_stack_index) {
+  if (faces_data_stack.length > 1 && faces_data_stack.length - 1 != cur_stack_index) {
     dom_btn_redo.addClass('active');
   } else {
     dom_btn_redo.removeClass('active');
   }
-  if (face_color_stack.length > 0) {
-    dom_btn_save.addClass('active');
-  } else {
-    dom_btn_save.removeClass('active');
-  }
+  //TODO diff
+  dom_btn_save.addClass('active');
 }
 
 module.exports = {

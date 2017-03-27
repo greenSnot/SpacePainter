@@ -4,6 +4,7 @@ export class Pen {
   constructor(h, s, l) {
     this.color = new THREE.Color();
     this.size = 1;
+    this.is_down = false;
     this.set_color_hsl(h, s, l);
     this.random_color_range = 0;
   }
@@ -27,5 +28,8 @@ export class Pen {
   }
   set_size(size) {
     this.size = size;
+  }
+  set_state(pen_down) {
+    this.is_down = pen_down;
   }
 }

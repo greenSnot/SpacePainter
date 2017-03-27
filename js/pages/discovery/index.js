@@ -4,49 +4,74 @@ var loading = require('../../loading.js');
 var request = require('../../request.js');
 var template = require('art-template-native');
 
+import { Viewer } from '../../viewer.js';
+
+
+var N_VIEWER = 2;
+
+var work_id_to_filename = {};
+
+var viewers = [];
+
+var works_dom = [];
+
+function work_on_click() {
+  router.active({
+    page: 'editor',
+    filename: work_id_to_filename[this.work_id]
+  });
+}
+
 function init() {
+  var html = '';
+  var i;
+  for (i = 0; i < N_VIEWER; ++i) {
+    html += template('template-discovery-work', {});
+  }
+  $('.works-wrap').html(html);
+  for (i = 0; i < N_VIEWER; ++i) {
+    var v = new Viewer({
+      dom: $('.work-item .viewer-wrap')[i],
+      container: $('.work-item .viewer-container')[i],
+      controls_on_click: work_on_click,
+    });
+    v.auxiliary.show();
+    viewers.push(v);
+    works_dom.push($('.work-item')[i]);
+  }
 }
 
 function pause() {
-  stop_listeners();
+  for (var i = 0; i < N_VIEWER; ++i) {
+    viewers[i].pause();
+  }
 }
 
 function active() {
+  for (var i = 0; i < N_VIEWER; ++i) {
+    viewers[i].active();
+  }
+
   $('.btn-test').on('click', function() {
     router.active({
       page: 'editor'
     });
   });
+
   loading.show();
   request_popular_works().then(function(works) {
     var html = '';
-    for (var i in works) {
+
+    for (var i = 0;i < works.length && i < N_VIEWER; ++i) {
       var data = works[i];
-      data.work_name = data.name;
-      data.id = data._id;
-      data.filename = data.cdn_filename;
-      html += template('template-discovery-work', data);
+      viewers[i].work_id = data.id;
+      work_id_to_filename[data.id] = data.cdn_filename;
+      $(works_dom[i]).find('.work-name').text(data.name);
+      viewers[i].load_from_url(config.cdn_works_path + data.cdn_filename);
     }
-    $('.works-wrap').html(html);
+
     loading.hide();
   });
-  start_listeners();
-}
-
-function work_on_click(e) {
-  var filename = $(this).attr('data-filename');
-  router.active({
-    page: 'editor',
-    filename: filename
-  });
-}
-
-function start_listeners() {
-  $('body').delegate('.work-item', 'click', work_on_click);
-}
-
-function stop_listeners() {
-  $('body').undelegate('.work-item', 'click', work_on_click);
 }
 
 function dispose() {
@@ -61,8 +86,8 @@ function request_popular_works() {
     limit: 10
   }).then(function(result) {
     if (result.code !== 0) {
-      //TODO throw error
-      return;
+      console.error(result);
+      return [];
     }
     return result.data;
   });

@@ -20,7 +20,7 @@ function url_code_to_json(u) {
 
 function get_query_from_url(url) {
   url = url || location.href;
-  var path_appendix = url.split('?')[1];
+  var path_appendix = url.split('#')[1];
   var query = url_code_to_json(path_appendix);
   return query;
 }

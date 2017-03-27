@@ -29,7 +29,7 @@ function active(data, replace) {
   pause_active_page();
   $('.page[data-page=' + page_name + ']').addClass('active');
   pages[page_name].active(data);
-  history.pushState(data, undefined, '?' + util.json_to_url_code(data));
+  history.pushState(data, undefined, '#' + util.json_to_url_code(data));
 }
 
 function pause_active_page() {

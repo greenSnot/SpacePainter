@@ -11,7 +11,7 @@ request.get('main.html').then(function(result) {
   init();
 }).catch(function(e) {
   console.error(e);
-  location.reload();
+  //location.reload();
 });
 
 function init() {

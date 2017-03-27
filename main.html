@@ -39,7 +39,7 @@
 </div>
 <div class="page" data-page="discovery">
   <button class="btn-test">test</button>
-  <div class="works-wrap">
+  <div class="works-wrap v-flex">
   </div>
 </div>
 <script id="template-btn-color" type="text/html">
@@ -58,8 +58,13 @@
   </div>
 </script>
 <script id="template-discovery-work" type="text/html">
-  <div class="work-item" data-id="<#=id#>" data-filename="<#=filename#>">
-    <div class="work-preview"></div>
+  <div class="work-item v-flex flex1" data-id="<#=id#>" data-filename="<#=filename#>">
+    <div class="work-preview flex1">
+      <div class="viewer-wrap">
+        <div class="viewer-container">
+        </div>
+      </div>
+    </div>
     <div class="work-name"><#=work_name#></div>
   </div>
 </script>
