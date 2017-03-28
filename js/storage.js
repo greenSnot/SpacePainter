@@ -1,6 +1,5 @@
-var lzw_compress = require('lzwcompress');
-var loading = require('../../loading.js');
-var request = require('../../request.js');
+var loading = require('./loading.js');
+var request = require('./request.js');
 var viewer;
 var faces_data_stack;
 var cur_stack_index;
@@ -37,14 +36,52 @@ function reset() {
   faces_data_stack = [viewer.get_faces_data()];
 }
 
+function pack(faces_data) {
+  var counter = 0;
+  var i = 0;
+  var cur_color_code = faces_data[0];
+  var res = [];
+  while (i < faces_data.length) {
+    if (cur_color_code != faces_data[i]) {
+      res.push(cur_color_code);
+      res.push(counter);
+      counter = 0;
+      cur_color_code = faces_data[i];
+    }
+    ++counter;
+    ++i;
+  }
+  res.push(cur_color_code);
+  res.push(counter);
+  return res;
+}
+
+function unpack(data) {
+  var res = [];
+  var n;
+  var value;
+  for (var i = 0;i < data.colors.length; i += 2) {
+    n = data.colors[i + 1];
+    value = data.colors[i];
+    for (var j = 0;j < n; ++j) {
+      res.push(value);
+    }
+  }
+  return res;
+}
+
 function save() {
   //TODO
-  var name = 'test' + Math.random();
-  var compressed = lzw_compress.pack(faces_data_stack[cur_stack_index]);
-  var base64 = btoa(JSON.stringify(compressed));
+  var name = prompt('work name') || 't' + Math.random();
+  var data = {
+    version: 1,
+    colors: pack(faces_data_stack[cur_stack_index])
+  };
+  var base64 = btoa(JSON.stringify(data));
   loading.show();
   request.upload_work(base64, name).then(function(result) {
     loading.hide();
+    alert('success');
     //TODO
   });
 }
@@ -66,4 +103,6 @@ module.exports = {
   redo: redo,
   undo: undo,
   reset: reset,
+  pack: pack,
+  unpack: unpack,
 };

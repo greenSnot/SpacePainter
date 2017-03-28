@@ -3,10 +3,41 @@ var request = require('./request.js');
 var util = Snot.util;
 var THREE = Snot.THREE;
 var loading = require('./loading.js');
-var lzw_compress = require('lzwcompress');
 var config = require('./config.js');
+var code_to_color = requrie('./colors.js').code_to_color;
+var white = requrie('./colors.js').white;
+var storage = require('./storage.js');
 
 import { Auxiliary } from './auxiliary.js';
+
+var triangle_net_kd;
+function init_kd_tree(geo) {
+  var faces = [];
+  for (var i = 0, j = geo.attributes.position.array.length / 9;i < j; ++i) {
+    var v1_x = geo.attributes.position.array[i * 9];
+    var v1_y = geo.attributes.position.array[i * 9 + 1];
+    var v1_z = geo.attributes.position.array[i * 9 + 2];
+
+    var v2_x = geo.attributes.position.array[i * 9 + 3];
+    var v2_y = geo.attributes.position.array[i * 9 + 4];
+    var v2_z = geo.attributes.position.array[i * 9 + 5];
+
+    var v3_x = geo.attributes.position.array[i * 9 + 6];
+    var v3_y = geo.attributes.position.array[i * 9 + 7];
+    var v3_z = geo.attributes.position.array[i * 9 + 8];
+
+    faces.push({
+      index: i * 9,
+      x: (v1_x + v2_x + v3_x) / 3,
+      y: (v1_y + v2_y + v3_y) / 3,
+      z: (v1_z + v2_z + v3_z) / 3
+    });
+  }
+
+  triangle_net_kd = new util.kd_tree(faces, function(a, b) {
+    return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2) + Math.pow(a.z - b.z, 2);
+  }, ['x', 'y', 'z']);
+}
 
 export class Viewer {
 
@@ -27,35 +58,11 @@ export class Viewer {
         );
 
         geo.addAttribute('color', new THREE.BufferAttribute(new Float32Array(geo.attributes.position.array.length), 3 ));
-
-        var faces = [];
-        for (var i = 0, j = geo.attributes.position.array.length / 9;i < j; ++i) {
-          var v1_x = geo.attributes.position.array[i * 9];
-          var v1_y = geo.attributes.position.array[i * 9 + 1];
-          var v1_z = geo.attributes.position.array[i * 9 + 2];
-
-          var v2_x = geo.attributes.position.array[i * 9 + 3];
-          var v2_y = geo.attributes.position.array[i * 9 + 4];
-          var v2_z = geo.attributes.position.array[i * 9 + 5];
-
-          var v3_x = geo.attributes.position.array[i * 9 + 6];
-          var v3_y = geo.attributes.position.array[i * 9 + 7];
-          var v3_z = geo.attributes.position.array[i * 9 + 8];
-
-          faces.push({
-            index: i * 9,
-            x: (v1_x + v2_x + v3_x) / 3,
-            y: (v1_y + v2_y + v3_y) / 3,
-            z: (v1_z + v2_z + v3_z) / 3
-          });
+        if (!triangle_net_kd) {
+          init_kd_tree(geo);
         }
-        // reset color to #ffffff
-        for (var k = 0; k < geo.attributes.position.array.length; ++k) {
-          geo.attributes.color.array[k] = 1;
-        }
-        self.triangle_net_kd = new util.kd_tree(faces, function(a, b) {
-          return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2) + Math.pow(a.z - b.z, 2);
-        }, ['x', 'y', 'z']);
+        self.triangle_net_kd = triangle_net_kd;
+
         return triangle_net;
       },
       x: 0,
@@ -110,6 +117,9 @@ export class Viewer {
 
     this.auxiliary = new Auxiliary(this.auxiliary_sphere_net_obj);
 
+    var faces_length = geo.attributes.position.array.length / 9;
+    this.faces_colors = new Int8Array(faces_length);
+
     this.clean(); // set white
   }
 
@@ -121,30 +131,20 @@ export class Viewer {
     loading.show();
     var self = this;
     request.get(url).then(function(res) {
-      var data = lzw_compress.unpack(JSON.parse(res));
-      self.load(data);
+      self.load(storage.unpack(res.colors));
       loading.hide();
     });
   }
 
   get_faces_data() {
-    var arr = this.triangle_net_obj.mesh.geometry.attributes.color.array;
-    var face_data= [];
-    for (var i = 0; i < arr.length; i += 9) {
-      face_data.push([
-        arr[i], //r
-        arr[i + 1], //g
-        arr[i + 2] //b
-      ]);
-    }
-    return face_data;
+    return this.faces_colors;
   }
 
   load(face_data) {
-    var color = new THREE.Color();
+    var code;
     for (var i = 0; i < face_data.length; ++i) {
-      color.setRGB(face_data[i][0], face_data[i][1], face_data[i][2]);
-      this.set_color_by_index(i * 9, color);
+      code = face_data[i];
+      this.set_color_by_index(i * 9, code_to_color[code], code);
     }
   }
 
@@ -163,7 +163,7 @@ export class Viewer {
     this._animate_id = requestAnimationFrame(() => this.update());
   }
 
-  set_color_by_index(index, color) {
+  set_color_by_index(index, color, color_code) {
     var arr = this.triangle_net_obj.mesh.geometry.attributes.color.array;
     function to_fixed(n) {
       return n.toFixed(2);
@@ -174,6 +174,8 @@ export class Viewer {
       arr[index + i + 1] = to_fixed(color.g);
       arr[index + i + 2] = to_fixed(color.b);
     }
+
+    this.faces_colors[index] = color_code;
     this.triangle_net_obj.mesh.geometry.attributes.color.needsUpdate = true;
   }
 
@@ -181,16 +183,14 @@ export class Viewer {
     var neighbors = this.triangle_net_kd.nearest(point, pen.size);
 
     for (var j = 0; j < neighbors.length; ++j) {
-      this.set_color_by_index(neighbors[j][0].index, pen.get_color());
+      this.set_color_by_index(neighbors[j][0].index, pen.get_color(), pen.color_code);
     }
   }
 
   clean() {
-    var color = new THREE.Color();
     var n_faces = this.triangle_net_obj.mesh.geometry.attributes.color.array.length / 9;
     for (var i = 0; i < n_faces; ++i) {
-      color.setRGB(1, 1, 1);
-      this.set_color_by_index(i * 9, color);
+      this.set_color_by_index(i * 9, white, white.code);
     }
   }
 

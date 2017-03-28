@@ -3,22 +3,12 @@ var snot = require('snot.js');
 var util = snot.util;
 var template = require('art-template-native');
 var $ = require('npm-zepto');
-var storage = require('./storage.js');
+var storage = require('../../storage.js');
 var router = require('../../router.js');
+var colors = require('../../colors.js').colors;
 
 var viewer;
 var pen;
-var colors = [
-  [0, 0.8],
-  [0, 0.6],
-  [0, 0.4],
-  [0.2, 0.8],
-  [0.2, 0.6],
-  [0.2, 0.4],
-  [0.4, 0.8],
-  [0.4, 0.6],
-  [0.4, 0.4],
-];
 
 var dom_full_palette_wrap;
 var dom_main_panel;
@@ -48,17 +38,11 @@ function set_main_panel(type) {
   dom_main_panel.attr('data-active-panel', type);
 }
 
-function gen_html_by_color_row_id(r, selected_index) {
-  var row = [];
-  var c = new THREE.Color();
-  for (var i = 0.6; i < 0.9; i+= 0.1) {
-    row.push(c.setHSL(colors[r][0], colors[r][1], i).getHex().toString(16));
-  }
-  row.push(c.setHSL(colors[r][0], colors[r][1], 0.9).getHex().toString(16));
+function gen_html_by_color_row_id(row_index, selected_col_index) {
   return template('template-color-row', {
-    colors: row,
-    row_id: r,
-    selected_index: selected_index
+    colors: colors[row_index],
+    row_id: row_index,
+    selected_index: selected_col_index
   });
 }
 
@@ -73,8 +57,8 @@ function init_full_palette() {
 }
 
 function btn_color_on_click(e) {
-  var color = parseInt(this.getAttribute('data-color'), 16);
-  pen.set_color_hex(color);
+  var code = parseInt(this.getAttribute('data-color-code'));
+  pen.set_color_by_code(code);
 
   var index = $(this).index();
   var row_id = parseInt($(this).closest('.palette-color-row').attr('data-row-id'));

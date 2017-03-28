@@ -147,6 +147,7 @@ body{
 }
 
 .full-palette-wrap {
+  -webkit-overflow-scrolling: touch;
   position: fixed;
   width: 100%;
   padding-right: 50px;

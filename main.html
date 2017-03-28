@@ -38,23 +38,34 @@
   </div>
 </div>
 <div class="page" data-page="discovery">
-  <button class="btn-test">test</button>
+  <button class="btn-create">create</button>
+  <button class="btn-my-works">my works</button>
   <div class="works-wrap v-flex">
   </div>
 </div>
+<div class="page" data-page="my_works">
+</div>
 <script id="template-btn-color" type="text/html">
-  <div class="palette-color <#=selected ? 'selected' : ''#>" style="background:#<#=color#>;border:1px solid #<#=border_color#>;" data-color="<#=color#>">
+  <div class="palette-color <#=selected ? 'selected' : ''#>" style="background:#<#=color#>;border:1px solid #<#=border_color#>;" data-color="<#=color#>" data-color-code="<#=color_code#>">
   </div>
 </script>
 <script id="template-color-row" type="text/html">
   <div class="palette-color-row h-flex v-center" data-row-id="<#=row_id#>">
-    <# for (var i = 0; i < colors.length; ++i) {#>
-      <# var is_eraser = i === colors.length - 1; #>
-      <# var color = is_eraser ? 'ffffff' : colors[i]; #>
-      <# var border_color = is_eraser ? colors[2] : colors[i]; #>
+    <# for (var i in colors) {#>
       <# var selected = i == selected_index; #>
-      <# include('template-btn-color', { color: color, border_color: border_color, selected: selected}) #>
+      <# include('template-btn-color', {
+        color: colors[i].getHex().toString(16),
+        border_color: colors[i].getHex().toString(16),
+        selected: selected,
+        color_code: colors[i].code
+      }) #>
     <#}#>
+  <# include('template-btn-color', {
+    color: 'ffffff',
+    border_color: colors[2].getHex().toString(16),
+    selected: colors.length == selected_index,
+    color_code: 0
+  }) #>
   </div>
 </script>
 <script id="template-discovery-work" type="text/html">
