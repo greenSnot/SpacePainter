@@ -4,8 +4,8 @@ var util = Snot.util;
 var THREE = Snot.THREE;
 var loading = require('./loading.js');
 var config = require('./config.js');
-var code_to_color = requrie('./colors.js').code_to_color;
-var white = requrie('./colors.js').white;
+var code_to_color = require('./colors.js').code_to_color;
+var white = require('./colors.js').white;
 var storage = require('./storage.js');
 
 import { Auxiliary } from './auxiliary.js';
@@ -27,7 +27,7 @@ function init_kd_tree(geo) {
     var v3_z = geo.attributes.position.array[i * 9 + 8];
 
     faces.push({
-      index: i * 9,
+      index: i,
       x: (v1_x + v2_x + v3_x) / 3,
       y: (v1_y + v2_y + v3_y) / 3,
       z: (v1_z + v2_z + v3_z) / 3
@@ -117,7 +117,7 @@ export class Viewer {
 
     this.auxiliary = new Auxiliary(this.auxiliary_sphere_net_obj);
 
-    var faces_length = geo.attributes.position.array.length / 9;
+    var faces_length = this.triangle_net_obj.mesh.geometry.attributes.position.array.length / 9;
     this.faces_colors = new Int8Array(faces_length);
 
     this.clean(); // set white
@@ -131,7 +131,7 @@ export class Viewer {
     loading.show();
     var self = this;
     request.get(url).then(function(res) {
-      self.load(storage.unpack(res.colors));
+      self.load(storage.unpack(JSON.parse(res).colors));
       loading.hide();
     });
   }
@@ -144,7 +144,7 @@ export class Viewer {
     var code;
     for (var i = 0; i < face_data.length; ++i) {
       code = face_data[i];
-      this.set_color_by_index(i * 9, code_to_color[code], code);
+      this.set_color_by_index(i, code_to_color[code], code);
     }
   }
 
@@ -170,9 +170,9 @@ export class Viewer {
     }
 
     for (var i = 0; i < 9; i += 3) {
-      arr[index + i] = to_fixed(color.r);
-      arr[index + i + 1] = to_fixed(color.g);
-      arr[index + i + 2] = to_fixed(color.b);
+      arr[index * 9 + i] = to_fixed(color.r);
+      arr[index * 9 + i + 1] = to_fixed(color.g);
+      arr[index * 9 + i + 2] = to_fixed(color.b);
     }
 
     this.faces_colors[index] = color_code;
@@ -190,7 +190,7 @@ export class Viewer {
   clean() {
     var n_faces = this.triangle_net_obj.mesh.geometry.attributes.color.array.length / 9;
     for (var i = 0; i < n_faces; ++i) {
-      this.set_color_by_index(i * 9, white, white.code);
+      this.set_color_by_index(i, white, white.code);
     }
   }
 

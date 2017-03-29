@@ -60,9 +60,9 @@ function unpack(data) {
   var res = [];
   var n;
   var value;
-  for (var i = 0;i < data.colors.length; i += 2) {
-    n = data.colors[i + 1];
-    value = data.colors[i];
+  for (var i = 0;i < data.length; i += 2) {
+    n = data[i + 1];
+    value = data[i];
     for (var j = 0;j < n; ++j) {
       res.push(value);
     }

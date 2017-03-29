@@ -6,7 +6,7 @@ var storage = require('../../storage.js');
 import { Viewer } from '../../viewer.js';
 import { Pen } from './pen.js';
 
-var pen = new Pen(999);
+var pen = new Pen(0);
 pen.set_random_color_range(0.1);
 
 var viewer;
