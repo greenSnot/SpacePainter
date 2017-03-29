@@ -3,8 +3,10 @@ var config = require('../../config.js');
 var loading = require('../../loading.js');
 var request = require('../../request.js');
 var template = require('art-template-native');
+var gui = require('./gui.js');
 
 import { Viewer } from '../../viewer.js';
+import { Pen } from '../../pen.js';
 
 
 var N_VIEWER = 2;
@@ -33,6 +35,7 @@ function init() {
     var v = new Viewer({
       dom: $('.work-item .viewer-wrap')[i],
       container: $('.work-item .viewer-container')[i],
+      pen: new Pen(),
       controls_on_click: work_on_click,
     });
     v.auxiliary.show();
@@ -45,18 +48,13 @@ function pause() {
   for (var i = 0; i < N_VIEWER; ++i) {
     viewers[i].pause();
   }
+  gui.pause();
 }
 
 function active() {
   for (var i = 0; i < N_VIEWER; ++i) {
     viewers[i].active();
   }
-
-  $('.btn-test').on('click', function() {
-    router.active({
-      page: 'editor'
-    });
-  });
 
   loading.show();
   request_popular_works().then(function(works) {
@@ -71,6 +69,7 @@ function active() {
     }
 
     loading.hide();
+    gui.active();
   });
 }
 

@@ -144,7 +144,8 @@ export class Viewer {
     var code;
     for (var i = 0; i < face_data.length; ++i) {
       code = face_data[i];
-      this.set_color_by_index(i, code_to_color[code], code);
+      this.pen.set_color_by_code(code);
+      this.set_color_by_index(i, pen.get_color(), code);
     }
   }
 
