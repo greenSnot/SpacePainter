@@ -1,0 +1,51 @@
+.page[data-page=discovery] {
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.work-preview {
+  width: 100%;
+  position: relative;
+}
+
+.works-wrap {
+  padding: 10px 0 10px 0;
+}
+
+.work-item {
+  position: relative;
+}
+.work-item:first-child {
+  margin-bottom: 10px;
+}
+
+.work-name {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.btn-page-next, .btn-page-prev, .btn-create, .btn-my-works, .btn-auxiliary {
+  height: 40px;
+  width: 40px;
+  border-radius: 100%;
+  border: 2px solid #fff;
+  color: #fff;
+}
+
+.btn-my-works {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.btn-page-prev, .btn-create {
+  margin-right: 5px;
+}
+
+.works-filter {
+  height: 40px;
+  color: #fff;
+  text-shadow: 0px 1px 3px #666;
+}

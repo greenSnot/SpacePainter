@@ -9,24 +9,29 @@
   margin-left: -15px;
   margin-top: -15px;
   border-radius: 100%;
+  box-sizing: border-box;
   -webkit-animation: loading-animate .9s 0.3s infinite alternate;
+  border: 3px solid #e9514c;
 }
 
 .loading:before, .loading:after {
+  box-sizing: inherit;
   content: '';
-  display: block;
+  display: inline-block;
   width: 30px;
-  top: 0;
+  margin-left: -3px;
+  margin-top: -3px;
+  right: 35px;
+  border: inherit;
   height: 30px;
   background: #fff;
-  margin-left: -130%;
+  position: absolute;
   border-radius: 100%;
   -webkit-animation: loading-animate .9s infinite alternate;
 }
 
 .loading:after {
-  margin-left: 130%;
-  margin-top: -100%;
+  left: 38px;
   -webkit-animation: loading-animate .9s .6s infinite alternate;
 }
 @-webkit-keyframes loading-animate {

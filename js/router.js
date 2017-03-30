@@ -23,12 +23,16 @@ function pause(page_name) {
   pages[page_name].pause();
 }
 
-function active(data, replace) {
+function active(data) {
+  pause_active_page();
+  pages[data.page].active(data);
+  update_url(data);
+}
+
+function update_url(data) {
   var page_name = data.page;
   data = data || {};
-  pause_active_page();
   $('.page[data-page=' + page_name + ']').addClass('active');
-  pages[page_name].active(data);
   history.pushState(data, undefined, '#' + util.json_to_url_code(data));
 }
 
@@ -43,4 +47,5 @@ module.exports = {
   init: init,
   pause: pause,
   active: active,
+  update_url: update_url,
 };

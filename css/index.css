@@ -62,6 +62,7 @@ body{
   -webkit-box-flex:1;
   flex:1;
 }
+
 .page {
   position: absolute;
   width: 100%;
@@ -89,15 +90,14 @@ body{
 }
 
 body {
-  background: #f33;
+  background: linear-gradient(to bottom, rgb(255, 246, 143) 0%, #e84949 100%);
 }
 
-.work-preview {
+.logo {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  width: 70px;
+  height: 40px;
   background: #f0f;
-  width: 100%;
-  position: relative;
-}
-
-.works-wrap {
-  height: 80%;
 }

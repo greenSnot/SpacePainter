@@ -35,6 +35,7 @@ function init() {
 
   var query = util.get_query_from_url();
   query.page = query.page || 'discovery';
+  query.n_page = query.n_page || 1;
   router.active(query);
 
   user.init().then(function() {

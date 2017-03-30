@@ -24,6 +24,25 @@ function work_on_click() {
   });
 }
 
+function update_viewer(n_page) {
+  loading.show();
+  return request_popular_works(n_page).then(function(works) {
+    loading.hide();
+    var html = '';
+
+    for (var i = 0;i < works.length && i < N_VIEWER; ++i) {
+      var data = works[i];
+      viewers[i].work_id = data.id;
+      work_id_to_filename[data.id] = data.cdn_filename;
+      $(works_dom[i]).find('.work-name').text(data.name);
+      viewers[i].load_from_url(config.cdn_works_path + data.cdn_filename);
+    }
+
+    gui.set_n_page(opts.n_page);
+    return new Promise();
+  });
+}
+
 function init() {
   var html = '';
   var i;
@@ -42,6 +61,7 @@ function init() {
     viewers.push(v);
     works_dom.push($('.work-item')[i]);
   }
+  gui.init(update_viewer);
 }
 
 function pause() {
@@ -51,26 +71,13 @@ function pause() {
   gui.pause();
 }
 
-function active() {
+function active(opts) {
   for (var i = 0; i < N_VIEWER; ++i) {
     viewers[i].active();
   }
 
-  loading.show();
-  request_popular_works().then(function(works) {
-    var html = '';
-
-    for (var i = 0;i < works.length && i < N_VIEWER; ++i) {
-      var data = works[i];
-      viewers[i].work_id = data.id;
-      work_id_to_filename[data.id] = data.cdn_filename;
-      $(works_dom[i]).find('.work-name').text(data.name);
-      viewers[i].load_from_url(config.cdn_works_path + data.cdn_filename);
-    }
-
-    loading.hide();
-    gui.active();
-  });
+  update_viewer(opts.n_page);
+  gui.active();
 }
 
 function dispose() {
@@ -78,11 +85,11 @@ function dispose() {
   $('.page[data-page=' + page_name + ']').html('');
 }
 
-function request_popular_works() {
+function request_popular_works(n_page) {
   return request.post(config.get_popular_works_url, {
     type: 'popular',
-    skip: 0,
-    limit: 10
+    skip: (n_page - 1) * N_VIEWER,
+    limit: N_VIEWER,
   }).then(function(result) {
     if (result.code !== 0) {
       console.error(result);
