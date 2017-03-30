@@ -1,4 +1,6 @@
 <div class="loading"></div>
+<div class="notices v-flex v-center"></div>
+<div class="dialogs v-flex v-center h-center"></div>
 <div class="page" data-page="editor">
   <div class="viewer-wrap main">
     <div class="viewer-container main">
@@ -78,5 +80,27 @@
       </div>
     </div>
     <div class="work-name"><#=work_name#></div>
+  </div>
+</script>
+<script id="template-notice" type="text/html">
+  <div class="notice"><#=text#></div>
+</script>
+<script id="template-dialog" type="text/html">
+  <div class="dialog v-flex" style="width:<#=width#>px;height:<#=height#>px;">
+    <div class="dialog-title vh-center">
+      <#=title#>
+    </div>
+    <div class="dialog-content v-flex flex1">
+      <#==content#>
+    </div>
+  </div>
+</script>
+<script id="template-confirm-buttons" type="text/html">
+  <div class="confirm-buttons h-flex">
+    <# for (var i in buttons) {#>
+      <div class="confirm-button vh-center flex1 <#=buttons[i].style#>" id="<#=buttons[i].id#>">
+        <#=buttons[i].text#>
+      </div>
+    <#}#>
   </div>
 </script>

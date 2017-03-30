@@ -127,6 +127,12 @@ function css() {
 
   let css_files = [
     './css/index.css',
+    './css/loading.css',
+    './css/dialog.css',
+    './css/notice.css',
+    './css/editor.css',
+    './css/discovery.css',
+    './css/my_works.css',
   ];
 
   return make_css_stream(css_files, 'index.css');

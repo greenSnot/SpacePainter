@@ -12,7 +12,6 @@ var viewer;
 
 function active(data) {
   gui.init(viewer, pen);
-  //viewer.enable_gyro(true);
   viewer.active();
   if (data.filename) {
     var url = config.cdn_works_path + data.filename;
@@ -54,7 +53,6 @@ function init() {
       gui.update_edit_gui();
     }
   });
-  //pen.is_down = true;
   storage.init(viewer);
 }
 

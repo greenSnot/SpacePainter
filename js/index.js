@@ -6,15 +6,24 @@ var request = require('./request.js');
 var user = require('./user.js');
 var util = require('./util.js');
 
+import { Notice } from './notice.js';
+import { Dialog, init_dialog } from './dialog.js';
+import { Confirm } from './confirm.js';
+
 request.get('main.html').then(function(result) {
   $('.main-html')[0].outerHTML = result;
   init();
 }).catch(function(e) {
   console.error(e);
+  new Confirm({
+    title: 'Error',
+    content: e.msg,
+  });
   //location.reload();
 });
 
 function init() {
+  init_dialog();
   loading.init();
   router.init();
 
@@ -34,8 +43,10 @@ function init() {
     if (e.code == -1) {
       request.wechat_login();
     } else {
-      // TODO
-      alert(e.msg);
+      new Confirm({
+        title: 'Error',
+        content: e.msg
+      });
     }
   });
 }
