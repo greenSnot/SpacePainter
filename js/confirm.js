@@ -6,6 +6,13 @@ var default_opts = {
   content: 'content',
   buttons: [
     {
+      text: '取消',
+      style: 'primary',
+      on_click: function(e, self) {
+        self.dispose();
+      }
+    },
+    {
       text: '确定',
       style: 'primary',
       on_click: function(e, self) {
@@ -28,6 +35,7 @@ export class Confirm extends Dialog {
         click: opts.buttons[i].on_click,
       };
     }
+
     opts.content += template('template-confirm-buttons', opts);
     super(opts);
   }

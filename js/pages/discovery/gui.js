@@ -70,5 +70,6 @@ function pause() {
 module.exports = {
   init: init,
   active: active,
+  set_n_page: set_n_page,
   pause: pause,
 };

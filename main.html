@@ -52,8 +52,9 @@
       <div class="btn-create vh-center">+</div>
       <div class="btn-auxiliary vh-center">#</div>
     </div>
-    <div class="btn-page-prev vh-center">prev</div>
-    <div class="btn-page-next vh-center">next</div>
+    <div class="btn-page-prev vh-center"><</div>
+    <div class="btn-page-next vh-center">></div>
+
   </div>
 </div>
 <div class="page" data-page="my_works">
@@ -112,5 +113,10 @@
         <#=buttons[i].text#>
       </div>
     <#}#>
+  </div>
+</script>
+<script id="template-prompt-input" type="text/html">
+  <div class="prompt-input-wrap">
+    <input  class="prompt-input" placeholder="<#=placeholder#>"/>
   </div>
 </script>

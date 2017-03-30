@@ -1,8 +1,13 @@
+var template = require('art-template-native');
+
 var loading = require('./loading.js');
 var request = require('./request.js');
 var viewer;
 var faces_data_stack;
 var cur_stack_index;
+
+import { Prompt } from './prompt.js';
+import { Notice } from './notice.js';
 
 function init(v) {
   viewer = v;
@@ -71,19 +76,30 @@ function unpack(data) {
 }
 
 function save() {
-  //TODO
-  var name = prompt('work name') || 't' + Math.random();
-  var data = {
-    version: 1,
-    colors: pack(faces_data_stack[cur_stack_index])
-  };
-  var base64 = btoa(JSON.stringify(data));
-  loading.show();
-  request.upload_work(base64, name).then(function(result) {
-    loading.hide();
-    alert('success');
-    //TODO
+  function do_save(name) {
+    var data = {
+      version: 1,
+      colors: pack(faces_data_stack[cur_stack_index])
+    };
+    var base64 = btoa(JSON.stringify(data));
+    loading.show();
+    request.upload_work(base64, name).then(function(result) {
+      loading.hide();
+      new Notice({
+        text: '保存成功'
+      });
+    });
+  }
+
+  new Prompt({
+    title: '保存',
+    placeholder: '请输入作品名',
+    confirm_on_click: function(e, value, self) {
+      var name = value;
+      do_save(name);
+    }
   });
+
 }
 
 function get_faces_data_stack() {

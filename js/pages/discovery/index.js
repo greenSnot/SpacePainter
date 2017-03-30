@@ -38,8 +38,7 @@ function update_viewer(n_page) {
       viewers[i].load_from_url(config.cdn_works_path + data.cdn_filename);
     }
 
-    gui.set_n_page(opts.n_page);
-    return new Promise();
+    gui.set_n_page(n_page);
   });
 }
 
@@ -72,11 +71,14 @@ function pause() {
 }
 
 function active(opts) {
+  opts.n_page = opts.n_page || 1;
+  router.update_url(opts);
+
   for (var i = 0; i < N_VIEWER; ++i) {
     viewers[i].active();
   }
 
-  update_viewer(opts.n_page);
+  update_viewer(parseInt(opts.n_page));
   gui.active();
 }
 

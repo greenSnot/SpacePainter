@@ -24,14 +24,18 @@ export class Dialog {
     this.dom = wrap.find('.dialog:last-child');
     wrap.addClass('visible');
 
+    var self = this;
     for (var i in opts.components) {
       // each events
       for (var j in opts.components[i]) {
-        this.dom.find(i).on(j, (e) => {
-          opts.components[i][j](e, this);
-        });
+        (function(i, j) {
+          self.dom.find(i).on(j, function(e) {
+            opts.components[i][j](e, self);
+          }, false);
+        })(i, j);
       }
     }
+
     this.opts = opts;
 
     var transition = 'all ' + opts.animate_duration + 's ease-in-out';
