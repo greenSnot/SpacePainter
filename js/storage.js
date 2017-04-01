@@ -12,7 +12,7 @@ import { Notice } from './notice.js';
 function init(v) {
   viewer = v;
   cur_stack_index = 0;
-  faces_data_stack = [viewer.get_faces_data()];
+  faces_data_stack = [viewer.get_faces_data(true)];
 }
 
 function store() {
@@ -21,7 +21,7 @@ function store() {
   for (i = faces_data_stack.length - 1; i > cur_stack_index; --i) {
     faces_data_stack.splice(i, 1);
   }
-  faces_data_stack.push(viewer.get_faces_data());
+  faces_data_stack.push(viewer.get_faces_data(true));
   cur_stack_index = faces_data_stack.length - 1;
 }
 
@@ -38,7 +38,7 @@ function redo() {
 function reset() {
   viewer.clean();
   cur_stack_index = 0;
-  faces_data_stack = [viewer.get_faces_data()];
+  faces_data_stack = [viewer.get_faces_data(true)];
 }
 
 function pack(faces_data) {

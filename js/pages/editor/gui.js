@@ -15,7 +15,7 @@ var dom_main_panel;
 var dom_main_palette;
 var dom_full_palette;
 var dom_btn_expand;
-var dom_btn_aux;
+var dom_btn_gyro;
 var dom_btn_save;
 var dom_btn_redo;
 var dom_btn_undo;
@@ -101,6 +101,18 @@ function slider_head_on_move(event) {
   dom_slider_head.css('margin-left', width_per_section * index + 'px');
 }
 
+function btn_gyro_on_click() {
+  if ($(this).hasClass('active')) {
+    $(this).removeClass('active');
+    viewer.set_gyro_state(false);
+    viewer.pen.is_down = false;
+  } else {
+    $(this).addClass('active');
+    viewer.set_gyro_state(true);
+    viewer.pen.is_down = true;
+  }
+}
+
 function btn_save_on_click() {
   if ($(this).hasClass('active')) {
     storage.save();
@@ -130,16 +142,6 @@ function btn_redo_on_click() {
   }
 }
 
-function btn_auxiliary_on_click() {
-  if ($(this).hasClass('active')) {
-    $(this).removeClass('active');
-    viewer.auxiliary.hide();
-  } else {
-    $(this).addClass('active');
-    viewer.auxiliary.show();
-  }
-}
-
 function pen_down_on_touchstart() {
   viewer.pen.is_down = true;
   viewer.engine.controls.allow_zooming_by_multi_fingers = false;
@@ -158,13 +160,13 @@ function start_listeners() {
 
   dom_slider_head.on('touchmove', slider_head_on_move);
 
-  dom_btn_aux.on('click', btn_auxiliary_on_click);
   dom_btn_redo.on('click', btn_redo_on_click);
   dom_btn_undo.on('click', btn_undo_on_click);
   dom_pen_down.on('touchstart', pen_down_on_touchstart);
   dom_pen_down.on('touchend', pen_down_on_touchend);
   dom_btn_discovery.on('click', btn_discovery_on_click);
   dom_btn_save.on('click', btn_save_on_click);
+  dom_btn_gyro.on('click', btn_gyro_on_click);
 }
 
 function init_selector() {
@@ -173,8 +175,8 @@ function init_selector() {
   dom_main_palette = $('.main-palette');
   dom_full_palette = $('.full-palette');
   dom_btn_expand = $('.btn-expand');
-  dom_btn_aux = $('.btn-auxiliary');
   dom_btn_save = $('.btn-save');
+  dom_btn_gyro = $('.btn-gyro');
   dom_btn_redo = $('.btn-redo');
   dom_btn_undo = $('.btn-undo');
   dom_pen_down = $('.pen-down');
@@ -216,7 +218,6 @@ function stop_listeners() {
   $('body').undelegate('.palette-color', 'click', btn_color_on_click);
 
   dom_btn_expand.off('click');
-  dom_btn_aux.off('click');
   dom_slider_head.off('touchmove');
   dom_btn_redo.off('click');
   dom_btn_undo.off('click');
@@ -224,6 +225,7 @@ function stop_listeners() {
   dom_pen_down.off('touchend');
   dom_btn_discovery.off('click');
   dom_btn_save.off('click');
+  dom_btn_gyro.off('click');
 }
 
 function update_edit_gui() {

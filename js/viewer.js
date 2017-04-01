@@ -117,13 +117,13 @@ export class Viewer {
 
     this.auxiliary = new Auxiliary(this.auxiliary_sphere_net_obj);
 
-    var faces_length = this.triangle_net_obj.mesh.geometry.attributes.position.array.length / 9;
-    this.faces_colors = new Int8Array(faces_length);
+    this.faces_length = this.triangle_net_obj.mesh.geometry.attributes.position.array.length / 9;
+    this.faces_colors = new Int8Array(this.faces_length);
 
     this.clean(); // set white
   }
 
-  enable_gyro(flag) {
+  set_gyro_state(flag) {
     this.engine.gyro = flag;
   }
 
@@ -136,8 +136,15 @@ export class Viewer {
     });
   }
 
-  get_faces_data() {
-    return this.faces_colors;
+  get_faces_data(need_clone) {
+    if (!need_clone) {
+      return this.faces_colors;
+    }
+    var clone = new Int8Array(this.faces_length);
+    for (var i in this.faces_colors) {
+      clone[i] = this.faces_colors[i];
+    }
+    return clone;
   }
 
   load(face_data) {
@@ -145,7 +152,7 @@ export class Viewer {
     for (var i = 0; i < face_data.length; ++i) {
       code = face_data[i];
       this.pen.set_color_by_code(code);
-      this.set_color_by_index(i, pen.get_color(), code);
+      this.set_color_by_index(i, this.pen.get_color(), code);
     }
   }
 

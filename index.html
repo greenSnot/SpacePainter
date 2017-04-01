@@ -1,14 +1,138 @@
-<html>
+<html manifest="IGNORE.manifest">
   <head>
     <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <meta name="format-detection" content="telephone=no">
     <meta name="viewport" content=" user-scalable=no, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0">
     <meta name="author" content="greenSnot@github">
-    <meta http-equiv="pragma" content="no-cache">
     <link rel="stylesheet" type="text/css" href="css/index.min.css">
   </head>
   <body>
-    <div class="main-html"></div>
+    <div class="loading"></div>
+    <div class="notices v-flex v-center"></div>
+    <div class="dialogs v-flex v-center h-center"></div>
+    <div class="page" data-page="editor">
+      <div class="viewer-wrap main">
+        <div class="viewer-container main">
+        </div>
+      </div>
+      <div class="fps"></div>
+      <div class="full-palette-wrap h-flex">
+        <div class="full-palette flex1"></div>
+      </div>
+      <div class="pen-down">Pen down</div>
+      <div class="buttons-wrap">
+        <div class="btn-gyro">gyro</div>
+        <div class="btn-save"></div>
+        <div class="btn-redo"></div>
+        <div class="btn-undo"></div>
+        <div class="btn-setting">setting</div>
+      </div>
+      <div class="btn-discovery">discovery</div>
+      <div class="main-panel h-flex v-center" data-active-panel="palette">
+        <div class="main-palette flex1">
+        </div>
+        <div class="pen-size-slider h-flex v-center flex1">
+          <div class="icon-scale-wrap vh-center">
+            <div class="icon-scale">
+            </div>
+          </div>
+          <div class="slider-bar flex1">
+            <div class="scales h-flex">
+              <div class="scale"></div>
+              <div class="scale"></div>
+              <div class="scale"></div>
+              <div class="scale"></div>
+            </div>
+            <div class="slider-head"></div>
+          </div>
+        </div>
+        <div class="btn-expand vh-center"></div>
+      </div>
+    </div>
+    <div class="page v-flex" data-page="discovery">
+      <div class="discovery-header h-flex">
+        <div class="logo"></div>
+        <div class="works-filter vh-center">热门作品</div>
+        <div class="btn-my-works vh-center"></div>
+      </div>
+      <div class="works-wrap flex1 v-flex">
+      </div>
+      <div class="page-buttons h-flex h-end">
+        <div class="flex1 h-flex h-start">
+          <div class="btn-create vh-center">+</div>
+          <div class="btn-auxiliary vh-center">#</div>
+        </div>
+        <div class="btn-page-prev vh-center"><</div>
+        <div class="btn-page-next vh-center">></div>
+    
+      </div>
+    </div>
+    <div class="page" data-page="my_works">
+    </div>
+    <script id="template-btn-color" type="text/html">
+      <div class="palette-color <#=selected ? 'selected' : ''#>" style="background:#<#=color#>;border:1px solid #<#=border_color#>;" data-color="<#=color#>" data-color-code="<#=color_code#>">
+      </div>
+    </script>
+    <script id="template-color-row" type="text/html">
+      <div class="palette-color-row h-flex v-center" data-row-id="<#=row_id#>">
+        <# for (var i in colors) {#>
+          <# var selected = i == selected_index; #>
+          <# include('template-btn-color', {
+            color: colors[i].getHex().toString(16),
+            border_color: colors[i].getHex().toString(16),
+            selected: selected,
+            color_code: colors[i].code
+          }) #>
+        <#}#>
+      <# include('template-btn-color', {
+        color: 'ffffff',
+        border_color: colors[2].getHex().toString(16),
+        selected: colors.length == selected_index,
+        color_code: 0
+      }) #>
+      </div>
+    </script>
+    <script id="template-discovery-work" type="text/html">
+      <div class="work-item v-flex flex1" data-id="<#=id#>" data-filename="<#=filename#>">
+        <div class="work-preview flex1">
+          <div class="viewer-wrap">
+            <div class="viewer-container">
+            </div>
+          </div>
+        </div>
+        <div class="work-name"><#=work_name#></div>
+      </div>
+    </script>
+    <script id="template-notice" type="text/html">
+      <div class="notice"><#=text#></div>
+    </script>
+    <script id="template-dialog" type="text/html">
+      <div class="dialog v-flex" style="width:<#=width#>px;height:<#=height#>px;">
+        <div class="dialog-title vh-center">
+          <#=title#>
+        </div>
+        <div class="dialog-content v-flex flex1">
+          <#==content#>
+        </div>
+      </div>
+    </script>
+    <script id="template-confirm-buttons" type="text/html">
+      <div class="confirm-buttons h-flex">
+        <# for (var i in buttons) {#>
+          <div class="confirm-button vh-center flex1 <#=buttons[i].style#>" id="<#=buttons[i].id#>">
+            <#=buttons[i].text#>
+          </div>
+        <#}#>
+      </div>
+    </script>
+    <script id="template-prompt-input" type="text/html">
+      <div class="prompt-input-wrap">
+        <input  class="prompt-input" placeholder="<#=placeholder#>"/>
+      </div>
+    </script>
     <script src="js/index.min.js"></script>
   </body>
 </html>
