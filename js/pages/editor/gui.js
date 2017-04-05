@@ -7,6 +7,8 @@ var storage = require('../../storage.js');
 var router = require('../../router.js');
 var colors = require('../../colors.js').colors;
 
+import { Dialog } from '../../dialog.js';
+
 var viewer;
 var pen;
 
@@ -19,8 +21,8 @@ var dom_btn_gyro;
 var dom_btn_save;
 var dom_btn_redo;
 var dom_btn_undo;
-var dom_pen_down;
 var dom_btn_discovery;
+var dom_btn_setting;
 var dom_slider_head;
 var dom_slider_bar;
 
@@ -120,6 +122,16 @@ function btn_save_on_click() {
   }
 }
 
+function btn_setting_on_click() {
+  var settings = {
+  };
+  new Dialog({
+    title: '设置',
+    content: template('template-setting-dialog', settings),
+    components: {}
+  });
+}
+
 function btn_discovery_on_click() {
   storage.reset();
   update_edit_gui();
@@ -142,18 +154,6 @@ function btn_redo_on_click() {
   }
 }
 
-function pen_down_on_touchstart() {
-  viewer.pen.is_down = true;
-  viewer.engine.controls.allow_zooming_by_multi_fingers = false;
-  viewer.engine.mouse_sensitivity = 0;
-}
-
-function pen_down_on_touchend() {
-  viewer.pen.is_down = false;
-  viewer.engine.controls.allow_zooming_by_multi_fingers = true;
-  viewer.engine.mouse_sensitivity = 0.3;
-}
-
 function start_listeners() {
   dom_btn_expand.on('click', btn_expand_on_click);
   $('body').delegate('.palette-color', 'click', btn_color_on_click);
@@ -162,9 +162,8 @@ function start_listeners() {
 
   dom_btn_redo.on('click', btn_redo_on_click);
   dom_btn_undo.on('click', btn_undo_on_click);
-  dom_pen_down.on('touchstart', pen_down_on_touchstart);
-  dom_pen_down.on('touchend', pen_down_on_touchend);
   dom_btn_discovery.on('click', btn_discovery_on_click);
+  dom_btn_setting.on('click', btn_setting_on_click);
   dom_btn_save.on('click', btn_save_on_click);
   dom_btn_gyro.on('click', btn_gyro_on_click);
 }
@@ -179,8 +178,8 @@ function init_selector() {
   dom_btn_gyro = $('.btn-gyro');
   dom_btn_redo = $('.btn-redo');
   dom_btn_undo = $('.btn-undo');
-  dom_pen_down = $('.pen-down');
   dom_btn_discovery = $('.btn-discovery');
+  dom_btn_setting = $('.btn-setting');
   dom_slider_head = $('.slider-head');
   dom_slider_bar = $('.slider-bar');
   dom_fps = $('.fps');
@@ -221,9 +220,8 @@ function stop_listeners() {
   dom_slider_head.off('touchmove');
   dom_btn_redo.off('click');
   dom_btn_undo.off('click');
-  dom_pen_down.off('touchstart');
-  dom_pen_down.off('touchend');
   dom_btn_discovery.off('click');
+  dom_btn_setting.off('click');
   dom_btn_save.off('click');
   dom_btn_gyro.off('click');
 }

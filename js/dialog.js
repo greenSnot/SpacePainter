@@ -10,8 +10,18 @@ var default_opts = {
 };
 
 var wrap;
+var dialogs = {};
 export function init_dialog() {
   wrap = $('.dialogs');
+  wrap.on('click', function(e) {
+    dispose_all_dialogs();
+  }, false);
+}
+
+function dispose_all_dialogs() {
+  for (var i in dialogs) {
+    dialogs[i].dispose();
+  }
 }
 
 export class Dialog {
@@ -24,7 +34,10 @@ export class Dialog {
     this.dom = wrap.find('.dialog:last-child');
     wrap.addClass('visible');
 
+    this.dialog_id = Math.random();
     var self = this;
+    dialogs[this.dialog_id] = this;
+
     for (var i in opts.components) {
       // each events
       for (var j in opts.components[i]) {
@@ -41,12 +54,16 @@ export class Dialog {
     var transition = 'all ' + opts.animate_duration + 's ease-in-out';
     this.dom.css('transition', transition);
     this.dom.css('-webkit-transition', transition);
+    this.dom.on('click', function(e) {
+      e.stopPropagation();
+    }, false);
     setTimeout(() => this.dom.addClass('active'), 30);
   }
   dispose() {
     function do_dispose() {
       this.dom.remove();
       wrap.removeClass('visible');
+      delete(dialogs[this.dialog_id]);
     }
     this.remove_listeners();
     this.dom.removeClass('active');

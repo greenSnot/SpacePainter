@@ -4,7 +4,7 @@
   "dependencies": {
     "fastclick": "^1.0.6",
     "npm-zepto": "^1.1.7",
-    "snot.js": "^1.0.8",
+    "snot.js": "^1.1.0",
     "three": "^0.84.0"
   },
   "devDependencies": {

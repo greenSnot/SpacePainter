@@ -225,12 +225,3 @@
   right: 50px;
   top: 20px;
 }
-.pen-down {
-  position: fixed;
-  bottom: 80px;
-  left: 20px;
-  background: #f0f;
-}
-.pen-down:active {
-  background: #f3f;
-}

@@ -113,6 +113,31 @@ export class Viewer {
       this.auxiliary_sphere_net_obj
     ]);
 
+    this.engine.controls.multi_fingers_handler = function(e, x, y) {
+      var cfx = event.touches[0].pageX;// Current frist  finger x
+      var cfy = event.touches[0].pageY;// Current first  finger y
+      var csx = x;                     // Current second finger x
+      var csy = y;                     // Current second finger y
+      var avg_x = (cfx + csx) * 0.5;
+      var avg_y = (cfy + csy) * 0.5;
+
+      var last_avg_x = (this.touches.fx + this.touches.sx) * 0.5;
+      var last_avg_y = (this.touches.fy + this.touches.sy) * 0.5;
+
+      this.host.set_ry(this.host.dest_ry + (last_avg_x - avg_x) * this.host.mouse_sensitivity);
+      this.host.set_rx(this.host.dest_rx - (last_avg_y - avg_y) * this.host.mouse_sensitivity);
+
+      var dis = util.distance2D(this.touches.fx, this.touches.fy, this.touches.sx, this.touches.sy) - util.distance2D(cfx, cfy, csx, csy);
+
+      var ratio = 0.12;
+      this.host.set_fov(this.host.fov + dis * ratio);
+
+      this.touches.fx = cfx;
+      this.touches.fy = cfy;
+      this.touches.sx = csx;
+      this.touches.sy = csy;
+    };
+
     this.engine.host = this;
 
     this.auxiliary = new Auxiliary(this.auxiliary_sphere_net_obj);
@@ -151,8 +176,10 @@ export class Viewer {
     var code;
     for (var i = 0; i < face_data.length; ++i) {
       code = face_data[i];
-      this.pen.set_color_by_code(code);
-      this.set_color_by_index(i, this.pen.get_color(), code);
+      if (code != this.faces_colors[i]) {
+        this.pen.set_color_by_code(code);
+        this.set_color_by_index(i, this.pen.get_color(), code);
+      }
     }
   }
 

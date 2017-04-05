@@ -31,17 +31,7 @@ function init() {
       }
       e.preventDefault();
       self.set_color_by_point(this.raycaster_point_from_mouse(x, y, config.NET_SIZE), self.pen);
-    },
-    on_touch_start: function(e, x, y) {
-      var self = this.host;
-      if (!self.pen.is_down) {
-        return;
-      }
-      e.preventDefault();
-      if (e.touches.length > 1) {
-        return;
-      }
-      self.set_color_by_point(this.raycaster_point_from_mouse(x, y, config.NET_SIZE), self.pen);
+      self.engine.mouse_sensitivity = 0;
     },
     on_touch_end: function(e) {
       var self = this.host;
@@ -51,8 +41,10 @@ function init() {
       e.preventDefault();
       storage.store();
       gui.update_edit_gui();
+      self.engine.mouse_sensitivity = 0.3;
     }
   });
+  viewer.pen.is_down = true;
   storage.init(viewer);
 }
 
