@@ -22,10 +22,10 @@ function init() {
 
   var query = util.get_query_from_url();
   query.page = query.page || 'discovery';
-  router.activate(query);
 
   user.init().then(function() {
     loading.hide();
+    router.activate(query);
   }).catch(function(e) {
     if (e.code == -1) {
       request.wechat_login();
