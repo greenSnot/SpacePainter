@@ -10,16 +10,18 @@ let jshint = require('gulp-jshint');
 let minify = require('gulp-minify');
 let stylish = require('jshint-stylish');
 let babel = require('gulp-babel');
+var less = require('gulp-less');
+var path = require('path');
 
 // Stream tools
-let combiner = require('stream-combiner2')
+let combiner = require('stream-combiner2');
 let es = require('event-stream');
 let rename = require('gulp-rename');
 
 // Code mangling tools
 let clean_css = require('gulp-clean-css');
 let concat = require('gulp-concat');
-let htmlmin = require('gulp-htmlmin')
+let htmlmin = require('gulp-htmlmin');
 let postcss = require('gulp-postcss');
 let cssnext = require('postcss-cssnext');
 let browserify = require('browserify');
@@ -33,7 +35,7 @@ let options = yargs
   .argv;
 
 function taskify_stream(stream) {
-  let task = combiner.obj(stream)
+  let task = combiner.obj(stream);
   if (options.pedantic) {
     task.on('error', function() {
       console.error(arguments);
@@ -92,7 +94,7 @@ let task_2_files = {
   hint: ['./js/**/*.js'],
   html: ['./*.html'],
   js: ['./js/**/*.js'],
-  css: ['./css/*.css'],
+  css: ['./css/*.less'],
   images: ['./images/*.*'],
 };
 
@@ -110,7 +112,11 @@ function css() {
 
   function make_css_stream(files, concat_name) {
     let s = [];
-    s.push(gulp.src(files));
+    s.push(gulp.src(files)
+      .pipe(less({
+        paths: [path.join(__dirname)]
+      })));
+
     s.push(postcss([cssnext({browsers: ['> 0.01%', '> 0.01% in CN']})]));
     if (concat_name) {
       s.push(concat(concat_name));
@@ -126,13 +132,13 @@ function css() {
   }
 
   let css_files = [
-    './css/index.css',
-    './css/loading.css',
-    './css/dialog.css',
-    './css/notice.css',
-    './css/editor.css',
-    './css/discovery.css',
-    './css/my_works.css',
+    './css/index.less',
+    './css/loading.less',
+    './css/dialog.less',
+    './css/notice.less',
+    './css/editor.less',
+    './css/discovery.less',
+    './css/my_works.less',
   ];
 
   return make_css_stream(css_files, 'index.css');
@@ -164,11 +170,19 @@ function config() {
   fs.writeFileSync('./config/merged.js', 'module.exports = ' + JSON.stringify(merged));
 }
 
+function font() {
+  let s = [];
+  s.push(gulp.src('./node_modules/font-awesome/fonts/*'));
+  s.push(gulp.dest('./build/fonts'));
+  return taskify_stream(s);
+}
+
 gulp.task('config', config);
 gulp.task('css', css);
 gulp.task('html', html);
 gulp.task('images', images);
 gulp.task('hint', hint);
 gulp.task('js', ['config'], js);
+gulp.task('font', font);
 
-gulp.task('default', ['hint', 'css', 'images', 'js', 'html']);
+gulp.task('default', ['hint', 'css', 'images', 'js', 'html', 'font']);

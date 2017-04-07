@@ -76,7 +76,7 @@ export class Viewer {
       mesh_generator: function () {
         return new THREE.Mesh(
           new THREE.SphereGeometry(config.NET_SIZE - 1, 32, 32),
-          new THREE.MeshBasicMaterial({wireframe: true, color: 0x666666, opacity: 0.4, side: THREE.DoubleSide})
+          new THREE.MeshBasicMaterial({wireframe: true, transparent: true, color: 0x666666, opacity: 0.2, side: THREE.DoubleSide})
         );
       },
       visible: false,
@@ -94,7 +94,7 @@ export class Viewer {
       max_fov: 110,
       min_fov: 40,
       mouse_sensitivity: 0.3,
-      auto_rotation: 0.0,
+      auto_rotation: opts.auto_rotation || 0.0,
       rx: 0,
       ry: 0,
       fisheye_offset: - 30,

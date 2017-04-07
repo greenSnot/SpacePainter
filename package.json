@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "dependencies": {
     "fastclick": "^1.0.6",
+    "font-awesome": "^4.7.0",
+    "gulp-less": "^3.3.0",
     "npm-zepto": "^1.1.7",
-    "snot.js": "^1.1.0",
+    "path": "^0.12.7",
+    "snot.js": "^1.1.1",
     "three": "^0.84.0"
   },
   "devDependencies": {

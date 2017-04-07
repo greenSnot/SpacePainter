@@ -60,14 +60,15 @@ export class Dialog {
     setTimeout(() => this.dom.addClass('active'), 30);
   }
   dispose() {
+    var self = this;
     function do_dispose() {
-      this.dom.remove();
+      self.dom.remove();
       wrap.removeClass('visible');
-      delete(dialogs[this.dialog_id]);
+      delete(dialogs[self.dialog_id]);
     }
     this.remove_listeners();
     this.dom.removeClass('active');
-    setTimeout(() => do_dispose.bind(this)(), this.opts.animate_duration * 1000);
+    setTimeout(do_dispose, this.opts.animate_duration * 1000);
   }
   remove_listeners() {
     for (var i in this.opts.components) {

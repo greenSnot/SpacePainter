@@ -54,6 +54,7 @@ function init() {
       dom: $('.work-item .viewer-wrap')[i],
       container: $('.work-item .viewer-container')[i],
       pen: new Pen(),
+      auto_rotation: 0.1,
       controls_on_click: work_on_click,
     });
     v.pause();
