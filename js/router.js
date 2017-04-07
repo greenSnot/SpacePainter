@@ -25,7 +25,7 @@ function pause(page_name) {
 
 function activate(data) {
   pause_active_page();
-  pages[data.page].active(data);
+  pages[data.page].activate(data);
   update_url(data);
 }
 

@@ -14,7 +14,7 @@ function init(_update_viewer) {
 }
 
 function btn_create_on_click() {
-  router.active({
+  router.activate({
     page: 'editor'
   });
 }
@@ -48,7 +48,7 @@ function set_n_page(_n_page) {
   });
 }
 
-function active() {
+function activate() {
   btn_create = $('.btn-create');
   btn_my_works = $('.btn-my-works');
   btn_page_next = $('.btn-page-next');
@@ -69,7 +69,7 @@ function pause() {
 
 module.exports = {
   init: init,
-  active: active,
+  activate: activate,
   set_n_page: set_n_page,
   pause: pause,
 };
