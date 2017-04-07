@@ -22,7 +22,7 @@ function init() {
 
   var query = util.get_query_from_url();
   query.page = query.page || 'discovery';
-  router.active(query);
+  router.activate(query);
 
   user.init().then(function() {
     loading.hide();

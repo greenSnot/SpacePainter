@@ -174,6 +174,7 @@ export class Viewer {
 
   load(face_data) {
     var code;
+    var cur_color_code = this.pen.color_code;
     for (var i = 0; i < face_data.length; ++i) {
       code = face_data[i];
       if (code != this.faces_colors[i]) {
@@ -181,6 +182,7 @@ export class Viewer {
         this.set_color_by_index(i, this.pen.get_color(), code);
       }
     }
+    this.pen.set_color_by_code(cur_color_code);
   }
 
   pause() {
@@ -188,7 +190,7 @@ export class Viewer {
     this.engine.stop_listeners();
   }
 
-  active() {
+  activate() {
     this.update();
     this.engine.start_listeners();
   }

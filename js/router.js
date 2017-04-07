@@ -13,7 +13,7 @@ function init() {
 
   window.addEventListener('popstate', function(event) {
     if (event.state) {
-      active(event.state);
+      activate(event.state);
     }
   }, false);
 }
@@ -23,7 +23,7 @@ function pause(page_name) {
   pages[page_name].pause();
 }
 
-function active(data) {
+function activate(data) {
   pause_active_page();
   pages[data.page].active(data);
   update_url(data);
@@ -46,6 +46,6 @@ function pause_active_page() {
 module.exports = {
   init: init,
   pause: pause,
-  active: active,
+  activate: activate,
   update_url: update_url,
 };

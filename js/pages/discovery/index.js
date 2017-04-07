@@ -18,7 +18,7 @@ var viewers = [];
 var works_dom = [];
 
 function work_on_click() {
-  router.active({
+  router.activate({
     page: 'editor',
     filename: work_id_to_filename[this.work_id]
   });
@@ -56,6 +56,7 @@ function init() {
       pen: new Pen(),
       controls_on_click: work_on_click,
     });
+    v.pause();
     v.auxiliary.show();
     viewers.push(v);
     works_dom.push($('.work-item')[i]);
@@ -70,16 +71,16 @@ function pause() {
   gui.pause();
 }
 
-function active(opts) {
+function activate(opts) {
   opts.n_page = opts.n_page || 1;
   router.update_url(opts);
 
   for (var i = 0; i < N_VIEWER; ++i) {
-    viewers[i].active();
+    viewers[i].activate();
   }
 
   update_viewer(parseInt(opts.n_page));
-  gui.active();
+  gui.activate();
 }
 
 function dispose() {
@@ -104,6 +105,6 @@ function request_popular_works(n_page) {
 module.exports = {
   init: init,
   pause: pause,
-  active: active,
+  activate: activate,
   dispose: dispose,
 };

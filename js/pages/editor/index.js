@@ -10,9 +10,9 @@ var pen = new Pen();
 
 var viewer;
 
-function active(data) {
+function activate(data) {
   gui.init(viewer, pen);
-  viewer.active();
+  viewer.activate();
   if (data.filename) {
     var url = config.cdn_works_path + data.filename;
     viewer.load_from_url(url);
@@ -44,6 +44,7 @@ function init() {
       self.engine.mouse_sensitivity = 0.3;
     }
   });
+  viewer.pause();
   viewer.pen.is_down = true;
   storage.init(viewer);
 }
@@ -63,6 +64,6 @@ function dispose() {
 module.exports = {
   init: init,
   pause: pause,
-  active: active,
+  activate: activate,
   dispose: dispose,
 };
