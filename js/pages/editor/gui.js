@@ -18,12 +18,14 @@ var dom_main_palette;
 var dom_full_palette;
 var dom_btn_expand;
 var dom_btn_gyro;
+var dom_btn_auxiliary;
 var dom_btn_save;
 var dom_btn_redo;
 var dom_btn_undo;
 var dom_btn_discovery;
 var dom_btn_setting;
 var dom_slider_head;
+var dom_slider_bar;
 var dom_slider_bar;
 
 var dom_fps;
@@ -113,6 +115,16 @@ function btn_gyro_on_click() {
   }
 }
 
+function btn_auxiliary_on_click() {
+  if ($(this).hasClass('active')) {
+    $(this).removeClass('active');
+    viewer.auxiliary.hide();
+  } else {
+    $(this).addClass('active');
+    viewer.auxiliary.show();
+  }
+}
+
 function btn_save_on_click() {
   if ($(this).hasClass('active')) {
     storage.save();
@@ -164,6 +176,7 @@ function start_listeners() {
   dom_btn_setting.on('click', btn_setting_on_click);
   dom_btn_save.on('click', btn_save_on_click);
   dom_btn_gyro.on('click', btn_gyro_on_click);
+  dom_btn_auxiliary.on('click', btn_auxiliary_on_click);
 }
 
 function init_selector() {
@@ -174,6 +187,7 @@ function init_selector() {
   dom_btn_expand = $('.btn-expand');
   dom_btn_save = $('.btn-save');
   dom_btn_gyro = $('.btn-gyro');
+  dom_btn_auxiliary = $('.page[data-page=editor] .btn-auxiliary');
   dom_btn_redo = $('.btn-redo');
   dom_btn_undo = $('.btn-undo');
   dom_btn_discovery = $('.btn-discovery');
@@ -222,6 +236,7 @@ function stop_listeners() {
   dom_btn_setting.off('click');
   dom_btn_save.off('click');
   dom_btn_gyro.off('click');
+  dom_btn_auxiliary.off('click');
 }
 
 function update_edit_gui() {

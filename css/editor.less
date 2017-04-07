@@ -197,31 +197,30 @@
   background: #d4d4d4;
 }
 
-.btn-undo, .btn-redo, .btn-save {
+.buttons-wrap>div {
   width: 40px;
   height: 40px;
+  color: #fff;
+  font-size: 30px;
   margin-bottom: 10px;
   opacity: 0.3;
-  display: inline-block;
+  transition: all 0.2s ease-in-out;
+  text-shadow: -1px 0px 2px #666;
 }
 
-.btn-undo.active, .btn-redo.active, .btn-save.active {
+.buttons-wrap>div.active {
   opacity: 1;
-}
-
-.btn-undo:before {
-  content: 'undo';
-}
-.btn-redo:before {
-  content: 'redo';
-}
-
-.btn-save:before {
-  content: 'save';
 }
 
 .btn-discovery {
   position: absolute;
-  right: 50px;
+  right: 20px;
   top: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f9d1d1;
+  padding: 4px;
+  color: #ea4747;
+  font-size: 30px;
 }
