@@ -144,6 +144,7 @@ function html() {
   let s = [];
   s.push(gulp.src(['./*.html']));
   s.push(gulp.dest('./build/'));
+
   return taskify_stream(s);
 }
 

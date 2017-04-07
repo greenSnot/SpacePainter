@@ -107,11 +107,9 @@ function btn_gyro_on_click() {
   if ($(this).hasClass('active')) {
     $(this).removeClass('active');
     viewer.set_gyro_state(false);
-    viewer.pen.is_down = false;
   } else {
     $(this).addClass('active');
     viewer.set_gyro_state(true);
-    viewer.pen.is_down = true;
   }
 }
 

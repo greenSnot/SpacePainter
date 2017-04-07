@@ -1,4 +1,4 @@
-<html manifest="IGNORE.manifest">
+<html>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
@@ -10,6 +10,38 @@
     <link rel="stylesheet" type="text/css" href="css/index.min.css">
   </head>
   <body>
+    <script>
+      (function() {
+        var lifetime = 60 * 1000;
+        if (localStorage.t) {
+          if (Date.now() - parseInt(localStorage.t) < lifetime) {
+            return;
+          }
+        }
+        function url_code_to_json(u) {
+          var query = {};
+          if (u) {
+            var data = u.split('&');
+            for (var i in data) {
+              var item = data[i].split('=');
+              query[item[0]] = item[1];
+            }
+          }
+          return query;
+        }
+        var url = location.href.split('#')[0];
+        var path_appendix = url.split('?')[1];
+        url = url.split('?')[0];
+        var query = url_code_to_json(path_appendix);
+        query.t = Date.now();
+        var u = [];
+        for (var i in query) {
+          u.push(i + '=' + query[i]);
+        }
+        localStorage.t = query.t;
+        location.href = url + '?' + u.join('&');
+      })();
+    </script>
     <div class="loading"></div>
     <div class="notices v-flex v-center"></div>
     <div class="dialogs v-flex v-center h-center"></div>

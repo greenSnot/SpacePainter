@@ -33,7 +33,7 @@ function update_url(data) {
   var page_name = data.page;
   data = data || {};
   $('.page[data-page=' + page_name + ']').addClass('active');
-  history.pushState(data, undefined, '#' + util.json_to_url_code(data));
+  history.pushState(data, undefined, '?' + util.json_to_url_code(data));
 }
 
 function pause_active_page() {
