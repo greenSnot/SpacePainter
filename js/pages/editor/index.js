@@ -17,6 +17,7 @@ function activate(router_data) {
   if (router_data.filename) {
     var url = config.cdn_works_path + router_data.filename;
     viewer.load_from_url(url);
+    storage.store();
   }
 }
 

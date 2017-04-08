@@ -97,14 +97,57 @@ body{
 }
 
 body {
-  background: linear-gradient(to bottom, rgb(255, 246, 143) 0%, #e84949 100%);
+  background: linear-gradient(right top, rgb(255, 246, 143) 0%, #e84949 100%);
 }
+
+@logo_size: 60;
 
 .logo {
   position: absolute;
   left: 10px;
   top: 10px;
-  width: 70px;
+  width: @logo_size*1.732/2px;
   height: 40px;
-  background: #f0f;
+}
+.logo-part1 {
+  position: absolute;
+  left: 25%;
+  top: 50%;
+  width: @logo_size/2px;
+  background: #fff;
+  height: @logo_size/15px;
+  transform: translateX(-50%) translateY(-50%) translateY(-@logo_size/8px) rotateZ(30deg) skewX(30deg);
+}
+.logo-part0 {
+  position: absolute;
+  left: 25%;
+  top: 50%;
+  width: @logo_size/2px;
+  background: #fff;
+  height: @logo_size/15px;
+  transform: translateX(-50%) translateY(-50%) translateY(@logo_size/8px) rotateZ(-30deg) skewX(-30deg);
+}
+.logo-part2 {
+  width: @logo_size/2px;
+  height: @logo_size/15px;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  background: #fff;
+  transform: translateX(-50%) translateY(-50%) rotateZ(90deg) skew(30deg) translateY(-50%) translateX(@logo_size/30px);
+}
+.logo-part3 {
+  width: @logo_size/4px;
+  height: @logo_size/15px;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  background: #fff;
+  transform: rotateZ(30deg) skew(30deg);
+}
+.logo-pattern-wrap:last-child {
+  transform: scale(-1);
+  top: 50%;
+  position: absolute;
+  width: 100%;
 }

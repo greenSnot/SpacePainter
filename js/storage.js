@@ -101,7 +101,6 @@ function save() {
       do_save(name);
     }
   });
-
 }
 
 function get_faces_data_stack() {
