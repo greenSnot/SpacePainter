@@ -10,11 +10,12 @@ var pen = new Pen();
 
 var viewer;
 
-function activate(data) {
-  gui.init(viewer, pen);
+function activate(router_data) {
+  router_data.mode = router_data.mode || 'edit';
+  gui.activate(router_data, viewer, pen);
   viewer.activate();
-  if (data.filename) {
-    var url = config.cdn_works_path + data.filename;
+  if (router_data.filename) {
+    var url = config.cdn_works_path + router_data.filename;
     viewer.load_from_url(url);
   }
 }
@@ -45,17 +46,16 @@ function init() {
     }
   });
   viewer.pause();
-  viewer.pen.is_down = true;
   storage.init(viewer);
 }
 
 function pause() {
-  gui.stop_listeners();
+  gui.pause();
   viewer.pause();
 }
 
 function dispose() {
-  gui.stop_listeners();
+  gui.pause();
   viewer.pause();
   var page_name = 'editor';
   $('.page[data-page=' + page_name + ']').html('');

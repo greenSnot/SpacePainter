@@ -17,7 +17,7 @@ function init(_update_viewer) {
 
 function btn_create_on_click() {
   router.activate({
-    page: 'editor'
+    page: 'editor',
   });
 }
 

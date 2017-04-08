@@ -20,6 +20,7 @@ var works_dom = [];
 function work_on_click() {
   router.activate({
     page: 'editor',
+    mode: 'preview',
     filename: work_id_to_filename[this.work_id]
   });
 }

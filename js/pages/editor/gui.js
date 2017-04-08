@@ -9,6 +9,8 @@ var colors = require('../../colors.js').colors;
 
 import { Dialog } from '../../dialog.js';
 
+var router_data;
+
 var viewer;
 var pen;
 
@@ -21,7 +23,9 @@ var dom_btn_gyro;
 var dom_btn_auxiliary;
 var dom_btn_save;
 var dom_btn_redo;
+var dom_btn_back;
 var dom_btn_undo;
+var dom_btn_fork;
 var dom_btn_discovery;
 var dom_btn_setting;
 var dom_slider_head;
@@ -150,11 +154,22 @@ function btn_discovery_on_click() {
   });
 }
 
+function btn_fork_on_click() {
+  set_mode('edit');
+  router.update_url(router_data, true);
+}
+
 function btn_undo_on_click() {
   if ($(this).hasClass('active')) {
     storage.undo();
     update_edit_gui();
   }
+}
+
+function btn_back_on_click() {
+  router.activate({
+    page: 'discovery'
+  });
 }
 
 function btn_redo_on_click() {
@@ -172,6 +187,8 @@ function start_listeners() {
 
   dom_btn_redo.on('click', btn_redo_on_click);
   dom_btn_undo.on('click', btn_undo_on_click);
+  dom_btn_back.on('click', btn_back_on_click);
+  dom_btn_fork.on('click', btn_fork_on_click);
   dom_btn_discovery.on('click', btn_discovery_on_click);
   dom_btn_setting.on('click', btn_setting_on_click);
   dom_btn_save.on('click', btn_save_on_click);
@@ -190,6 +207,8 @@ function init_selector() {
   dom_btn_auxiliary = $('.page[data-page=editor] .btn-auxiliary');
   dom_btn_redo = $('.btn-redo');
   dom_btn_undo = $('.btn-undo');
+  dom_btn_back = $('.btn-back');
+  dom_btn_fork = $('.btn-fork');
   dom_btn_discovery = $('.btn-discovery');
   dom_btn_setting = $('.btn-setting');
   dom_slider_head = $('.slider-head');
@@ -197,9 +216,22 @@ function init_selector() {
   dom_fps = $('.fps');
 }
 
+function set_mode(mode) {
+  router_data.mode = mode;
+  $('.editor-mode').css('visibility', 'hidden');
+  if (mode === 'preview') {
+    viewer.pen.is_down = false;
+    $('.editor-mode[data-mode=preview]').css('visibility', 'visible');
+  } else if (mode === 'edit') {
+    viewer.pen.is_down = true;
+    $('.editor-mode[data-mode=edit]').css('visibility', 'visible');
+  }
+}
 
-function init(v, _pen) {
+function activate(_router_data, v, _pen) {
+
   viewer = v;
+  router_data = _router_data;
   update_time_arr = [];
   init_selector();
   pen = _pen;
@@ -211,6 +243,9 @@ function init(v, _pen) {
   // Do it twice otherwise it won't be work.
   dom_full_palette.find('.palette-color').first().trigger('click');
   dom_full_palette.find('.palette-color').first().trigger('click');
+
+  set_mode(router_data.mode);
+  router.update_url(router_data);
 }
 
 function update_fps() {
@@ -232,6 +267,8 @@ function stop_listeners() {
   dom_slider_head.off('touchmove');
   dom_btn_redo.off('click');
   dom_btn_undo.off('click');
+  dom_btn_back.off('click');
+  dom_btn_fork.off('click');
   dom_btn_discovery.off('click');
   dom_btn_setting.off('click');
   dom_btn_save.off('click');
@@ -256,9 +293,15 @@ function update_edit_gui() {
   dom_btn_save.addClass('active');
 }
 
+function pause() {
+  stop_listeners();
+  $('.editor-mode').css('visibility', 'hidden');
+}
+
 module.exports = {
   update_fps: update_fps,
-  init: init,
+  activate: activate,
+  pause: pause,
   update_edit_gui: update_edit_gui,
   stop_listeners: stop_listeners,
   start_listeners: start_listeners,

@@ -79,6 +79,7 @@ function save() {
   function do_save(name) {
     var data = {
       version: 1,
+      name: name,
       colors: pack(faces_data_stack[cur_stack_index])
     };
     var base64 = btoa(JSON.stringify(data));

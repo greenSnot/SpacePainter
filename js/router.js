@@ -25,15 +25,19 @@ function pause(page_name) {
 
 function activate(data) {
   pause_active_page();
+  update_url(data, true);
   pages[data.page].activate(data);
-  update_url(data);
 }
 
-function update_url(data) {
+function update_url(data, append) {
   var page_name = data.page;
   data = data || {};
   $('.page[data-page=' + page_name + ']').addClass('active');
-  history.pushState(data, undefined, '?' + util.json_to_url_code(data));
+  if (append) {
+    history.pushState(data, undefined, '?' + util.json_to_url_code(data));
+  } else {
+    history.replaceState(data, undefined, '?' + util.json_to_url_code(data));
+  }
 }
 
 function pause_active_page() {

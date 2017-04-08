@@ -43,6 +43,7 @@
       })();
     </script>
     <div class="loading"></div>
+    <div class="loading-mask"></div>
     <div class="notices v-flex v-center"></div>
     <div class="dialogs v-flex v-center h-center"></div>
     <div class="page" data-page="editor">
@@ -51,51 +52,61 @@
         </div>
       </div>
       <div class="fps"></div>
-      <div class="full-palette-wrap h-flex">
-        <div class="full-palette flex1"></div>
-      </div>
-      <div class="buttons-wrap">
-        <div class="btn-auxiliary vh-center">
-          <i class="fa fa-hashtag" aria-hidden="true"></i>
+      <div class="editor-mode" data-mode="edit">
+        <div class="full-palette-wrap h-flex">
+          <div class="full-palette flex1"></div>
         </div>
-        <div class="btn-gyro vh-center">
-          <i class="fa fa-compass" aria-hidden="true"></i>
-        </div>
-        <div class="btn-save vh-center">
-          <i class="fa fa-save" aria-hidden="true"></i>
-        </div>
-        <div class="btn-redo vh-center">
-          <i class="fa fa-repeat" aria-hidden="true"></i>
-        </div>
-        <div class="btn-undo vh-center">
-          <i class="fa fa-undo" aria-hidden="true"></i>
-        </div>
-        <div class="btn-setting vh-center active">
-          <i class="fa fa-cog" aria-hidden="true"></i>
-        </div>
-      </div>
-      <div class="btn-discovery vh-center">
-        <i class="fa fa-globe" aria-hidden="true"></i>
-      </div>
-      <div class="main-panel h-flex v-center" data-active-panel="palette">
-        <div class="main-palette flex1">
-        </div>
-        <div class="pen-size-slider h-flex v-center flex1">
-          <div class="icon-scale-wrap vh-center">
-            <div class="icon-scale">
-            </div>
+        <div class="buttons-wrap">
+          <div class="btn-auxiliary vh-center">
+            <i class="fa fa-hashtag" aria-hidden="true"></i>
           </div>
-          <div class="slider-bar flex1">
-            <div class="scales h-flex">
-              <div class="scale"></div>
-              <div class="scale"></div>
-              <div class="scale"></div>
-              <div class="scale"></div>
-            </div>
-            <div class="slider-head"></div>
+          <div class="btn-gyro vh-center">
+            <i class="fa fa-compass" aria-hidden="true"></i>
+          </div>
+          <div class="btn-save vh-center">
+            <i class="fa fa-save" aria-hidden="true"></i>
+          </div>
+          <div class="btn-redo vh-center">
+            <i class="fa fa-repeat" aria-hidden="true"></i>
+          </div>
+          <div class="btn-undo vh-center">
+            <i class="fa fa-undo" aria-hidden="true"></i>
+          </div>
+          <div class="btn-setting vh-center active">
+            <i class="fa fa-cog" aria-hidden="true"></i>
           </div>
         </div>
-        <div class="btn-expand vh-center"></div>
+        <div class="btn-discovery vh-center">
+          <i class="fa fa-globe" aria-hidden="true"></i>
+        </div>
+        <div class="main-panel h-flex v-center" data-active-panel="palette">
+          <div class="main-palette flex1">
+          </div>
+          <div class="pen-size-slider h-flex v-center flex1">
+            <div class="icon-scale-wrap vh-center">
+              <div class="icon-scale">
+              </div>
+            </div>
+            <div class="slider-bar flex1">
+              <div class="scales h-flex">
+                <div class="scale"></div>
+                <div class="scale"></div>
+                <div class="scale"></div>
+                <div class="scale"></div>
+              </div>
+              <div class="slider-head"></div>
+            </div>
+          </div>
+          <div class="btn-expand vh-center"></div>
+        </div>
+      </div>
+      <div class="editor-mode" data-mode="preview">
+        <div class="btn-back">
+          <i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>
+        </div>
+        <div class="btn-fork vh-center">
+          再创作
+        </div>
       </div>
     </div>
     <div class="page v-flex" data-page="discovery">
