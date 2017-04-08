@@ -63,7 +63,7 @@ function init() {
     viewers.push(v);
     works_dom.push($('.work-item')[i]);
   }
-  gui.init(update_viewer);
+  gui.init(viewers, update_viewer);
 }
 
 function pause() {

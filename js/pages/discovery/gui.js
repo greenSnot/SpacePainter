@@ -6,12 +6,15 @@ var btn_create;
 var btn_my_works;
 var btn_page_next;
 var btn_page_prev;
+var btn_auxiliary;
 var avatar;
 
 var update_viewer;
+var viewers;
 var n_page;
 
-function init(_update_viewer) {
+function init(_viewers, _update_viewer) {
+  viewers = _viewers;
   update_viewer = _update_viewer;
 }
 
@@ -50,6 +53,21 @@ function set_n_page(_n_page) {
   });
 }
 
+function btn_auxiliary_on_click(e) {
+  var i;
+  if ($(this).hasClass('active')) {
+    $(this).removeClass('active');
+    for (i in viewers) {
+      viewers[i].auxiliary.hide();
+    }
+  } else {
+    $(this).addClass('active');
+    for (i in viewers) {
+      viewers[i].auxiliary.show();
+    }
+  }
+}
+
 function update_user_info(info) {
   avatar.attr('src', info.headimgurl);
 }
@@ -57,6 +75,7 @@ function update_user_info(info) {
 function activate() {
   btn_create = $('.btn-create');
   btn_my_works = $('.btn-my-works');
+  btn_auxiliary = $('.page[data-page=discovery] .btn-auxiliary');
   avatar = btn_my_works.find('.avatar');
   btn_page_next = $('.btn-page-next');
   btn_page_prev = $('.btn-page-prev');
@@ -65,15 +84,17 @@ function activate() {
   btn_my_works.on('click', btn_my_works_on_click);
   btn_page_next.on('click', btn_page_next_on_click);
   btn_page_prev.on('click', btn_page_prev_on_click);
+  btn_auxiliary.on('click', btn_auxiliary_on_click);
 
   update_user_info(user.get_user_basic_info());
 }
 
 function pause() {
-  btn_create.off('click', btn_create_on_click);
-  btn_my_works.off('click', btn_my_works_on_click);
-  btn_page_next.off('click', btn_page_next_on_click);
-  btn_page_prev.off('click', btn_page_prev_on_click);
+  btn_create.off('click');
+  btn_my_works.off('click');
+  btn_page_next.off('click');
+  btn_page_prev.off('click');
+  btn_auxiliary.off('click');
 }
 
 module.exports = {

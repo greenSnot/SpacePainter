@@ -89,10 +89,11 @@ function save() {
       new Notice({
         text: '保存成功'
       });
+      dialog.dispose();
     });
   }
 
-  new Prompt({
+  var dialog = new Prompt({
     title: '保存',
     placeholder: '请输入作品名',
     confirm_on_click: function(e, value, self) {
