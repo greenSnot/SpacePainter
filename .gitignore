@@ -4,3 +4,4 @@ config/local.js
 config/merged.js
 js/config.js
 config.py
+*.sha1

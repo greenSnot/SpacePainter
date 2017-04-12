@@ -16,6 +16,14 @@ q = Auth(config['AK'], config['SK'])
 
 bucket = BucketManager(q)
 
+def write(filename, content, append = False):
+    type='w'
+    if append:
+        type = 'a'
+    fileObj = open(filename,type,-1)
+    fileObj.write(content)
+    fileObj.close()
+
 def sha1(a):
     m2=hashlib.sha1()
     m2.update(a)
@@ -71,6 +79,15 @@ build_path = 'build'
 files = get_all_files(build_path)
 
 for i in files:
+    if i.find('.sha1') > 0:
+        continue
+    sha_file = i + '.sha1'
+    content_hash = sha1(open(i).read())
+    if os.path.exists(sha_file):
+        if open(sha_file).read() == content_hash:
+            continue
+
+    write(sha_file, content_hash)
     localfile = i
     key = config['prefix'] + i[len(build_path) + 1:]
     print localfile
