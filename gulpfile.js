@@ -35,6 +35,11 @@ let options = yargs
   .alias('d', 'debug')
   .argv;
 
+var template_data = {
+  js_version: 1,
+  css_version: 1,
+};
+
 function taskify_stream(stream) {
   let task = combiner.obj(stream);
   if (options.pedantic) {
@@ -149,7 +154,9 @@ function html() {
   do_watch('html');
 
   let s = [];
-  s.push(gulp.src(['./*.html']).pipe(template({}, {dirname: __dirname})));
+  template_data.js_version = Date.now();
+  template_data.css_version = Date.now();
+  s.push(gulp.src(['./*.html']).pipe(template(template_data, {dirname: __dirname})));
   s.push(gulp.dest('./build/'));
 
   return taskify_stream(s);
@@ -179,11 +186,11 @@ function font() {
 }
 
 gulp.task('config', config);
-gulp.task('css', css);
+gulp.task('css', ['html'], css);
 gulp.task('html', html);
 gulp.task('images', images);
 gulp.task('hint', hint);
-gulp.task('js', ['config'], js);
+gulp.task('js', ['config', 'html'], js);
 gulp.task('font', font);
 
-gulp.task('default', ['hint', 'css', 'images', 'js', 'html', 'font']);
+gulp.task('default', ['hint', 'css', 'images', 'js', 'font']);

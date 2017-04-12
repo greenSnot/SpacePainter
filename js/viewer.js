@@ -39,6 +39,9 @@ function init_kd_tree(geo) {
   }, ['x', 'y', 'z']);
 }
 
+var size = 1024;
+var screenshot_renderer = new THREE.WebGLRenderer();
+
 export class Viewer {
 
   constructor(opts) {
@@ -88,7 +91,7 @@ export class Viewer {
     this.engine = new Snot({
       dom: opts.dom,
       container: opts.container,
-      size: 1024,
+      size: size,
       gyro: false,
       fov: 80,
       max_fov: 110,
@@ -231,4 +234,8 @@ export class Viewer {
     }
   }
 
+  screenshot() {
+    screenshot_renderer.setSize(400, 400);
+    return this.engine.screenshot_planet_view(screenshot_renderer, 150, config.NET_SIZE);
+  }
 }

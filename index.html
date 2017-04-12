@@ -7,7 +7,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="viewport" content=" user-scalable=no, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0">
     <meta name="author" content="greenSnot@github">
-    <link rel="stylesheet" type="text/css" href="css/index.min.css">
+    <link rel="stylesheet" type="text/css" href="css/index.min.css?<%=css_version%>">
   </head>
   <body>
     <%=__include('./html/anti-cache.html')%>
@@ -17,6 +17,6 @@
     <div class="page v-flex" data-page="discovery">
       <%=__include('./html/discovery.html')%>
     </div>
-    <script src="js/index.min.js"></script>
+    <script src="js/index.min.js?<%=js_version%>"></script>
   </body>
 </html>
