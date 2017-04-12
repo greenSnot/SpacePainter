@@ -1,0 +1,9 @@
+<script id="template-confirm-buttons" type="text/html">
+  <div class="confirm-buttons h-flex">
+    <# for (var i in buttons) {#>
+      <div class="confirm-button vh-center flex1 <#=buttons[i].style#>" id="<#=buttons[i].id#>">
+        <#=buttons[i].text#>
+      </div>
+    <#}#>
+  </div>
+</script>

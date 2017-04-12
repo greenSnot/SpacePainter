@@ -1,0 +1,19 @@
+<script id="template-color-row" type="text/html">
+  <div class="palette-color-row h-flex v-center" data-row-id="<#=row_id#>">
+    <# for (var i in colors) {#>
+      <# var selected = i == selected_index; #>
+      <# include('template-btn-color', {
+        color: colors[i].getHex().toString(16),
+        border_color: colors[i].getHex().toString(16),
+        selected: selected,
+        color_code: colors[i].code
+      }) #>
+    <#}#>
+  <# include('template-btn-color', {
+    color: 'ffffff',
+    border_color: colors[2].getHex().toString(16),
+    selected: colors.length == selected_index,
+    color_code: 0
+  }) #>
+  </div>
+</script>

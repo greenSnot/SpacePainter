@@ -1,0 +1,5 @@
+<script id="template-setting-dialog" type="text/html">
+  <div class="">
+    mouse sensitivity
+  </div>
+</script>

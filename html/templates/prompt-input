@@ -1,0 +1,5 @@
+<script id="template-prompt-input" type="text/html">
+  <div class="prompt-input-wrap">
+    <input  class="prompt-input" placeholder="<#=placeholder#>"/>
+  </div>
+</script>

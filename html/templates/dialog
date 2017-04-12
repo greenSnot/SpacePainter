@@ -1,0 +1,10 @@
+<script id="template-dialog" type="text/html">
+  <div class="dialog v-flex" style="width:<#=width#>px;height:<#=height#>px;">
+    <div class="dialog-title vh-center">
+      <#=title#>
+    </div>
+    <div class="dialog-content v-flex flex1">
+      <#==content#>
+    </div>
+  </div>
+</script>

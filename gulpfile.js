@@ -12,6 +12,7 @@ let stylish = require('jshint-stylish');
 let babel = require('gulp-babel');
 var less = require('gulp-less');
 var path = require('path');
+var template = require('gulp-templatex');
 
 // Stream tools
 let combiner = require('stream-combiner2');
@@ -148,7 +149,7 @@ function html() {
   do_watch('html');
 
   let s = [];
-  s.push(gulp.src(['./*.html']));
+  s.push(gulp.src(['./*.html']).pipe(template({}, {dirname: __dirname})));
   s.push(gulp.dest('./build/'));
 
   return taskify_stream(s);
