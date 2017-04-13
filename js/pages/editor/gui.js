@@ -60,6 +60,7 @@ function update_main_palette(color_row_id, selected_index) {
 }
 
 function init_full_palette() {
+  dom_full_palette[0].innerHTML = '';
   for (var r = 0; r < colors.length; ++r) {
     dom_full_palette[0].innerHTML += gen_html_by_color_row_id(r);
   }
@@ -239,9 +240,6 @@ function activate(_router_data, v, _pen) {
   init_full_palette();
   start_listeners();
 
-  // TODO
-  // Do it twice otherwise it won't be work.
-  dom_full_palette.find('.palette-color').first().trigger('click');
   dom_full_palette.find('.palette-color').first().trigger('click');
 
   set_mode(router_data.mode);

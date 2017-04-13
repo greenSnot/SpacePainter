@@ -40,7 +40,7 @@ function init_kd_tree(geo) {
 }
 
 var size = 1024;
-var screenshot_renderer = new THREE.WebGLRenderer();
+//var screenshot_renderer = new THREE.WebGLRenderer();
 
 export class Viewer {
 
@@ -234,8 +234,8 @@ export class Viewer {
     }
   }
 
-  screenshot() {
-    screenshot_renderer.setSize(400, 400);
-    return this.engine.screenshot_planet_view(screenshot_renderer, 150, config.NET_SIZE);
-  }
+  //screenshot() {
+  //  screenshot_renderer.setSize(400, 400);
+  //  return this.engine.screenshot_planet_view(screenshot_renderer, 150, config.NET_SIZE);
+  //}
 }
