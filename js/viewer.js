@@ -239,9 +239,9 @@ export class Viewer {
   }
 
   planet_view(duration) {
+    duration = duration || 1000;
     this.engine.lock_rx = true;
     this.engine.max_fov = 150;
-    duration = duration || 1000;
     this.planet_view_progress_step = 1 / 60 / (duration / 1000);
     this.planet_view_progress = 0;
     this.planet_view_start_offset = this.engine.camera_offset_y;
@@ -266,8 +266,8 @@ export class Viewer {
   }
 
   normal_view(duration) {
-    this.engine.lock_rx = true;
     duration = duration || 1000;
+    this.engine.lock_rx = false;
     this.planet_view_progress_step = 1 / 60 / (duration / 1000);
     this.planet_view_progress = 0;
     this.planet_view_start_offset = this.engine.camera_offset_y;
