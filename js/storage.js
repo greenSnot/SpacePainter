@@ -77,13 +77,13 @@ function unpack(data) {
 
 function save() {
   function do_save(name) {
+    loading.show();
     var data = {
       version: 1,
       name: name,
       colors: pack(faces_data_stack[cur_stack_index])
     };
     var base64 = btoa(JSON.stringify(data));
-    loading.show();
     request.upload_work(base64, name).then(function(result) {
       loading.hide();
       new Notice({
