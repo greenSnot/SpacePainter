@@ -14,7 +14,7 @@ var i;
 var j;
 var k;
 
-var N_H = 9;
+var N_H = 12;
 var N_S = 3;
 var N_L = 4;
 

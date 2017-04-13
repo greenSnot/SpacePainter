@@ -7,6 +7,7 @@ var config = require('./config.js');
 var code_to_color = require('./colors.js').code_to_color;
 var white = require('./colors.js').white;
 var storage = require('./storage.js');
+var easing = require('easing-js-ii');
 
 import { Auxiliary } from './auxiliary.js';
 
@@ -198,11 +199,6 @@ export class Viewer {
     this.engine.start_listeners();
   }
 
-  update() {
-    this.engine.update();
-    this._animate_id = requestAnimationFrame(() => this.update());
-  }
-
   set_color_by_index(index, color, color_code) {
     var arr = this.triangle_net_obj.mesh.geometry.attributes.color.array;
     function to_fixed(n) {
@@ -232,6 +228,55 @@ export class Viewer {
     for (var i = 0; i < n_faces; ++i) {
       this.set_color_by_index(i, white, white.code);
     }
+  }
+
+  update() {
+    if (this.planet_view_should_update) {
+      this.planet_view_update();
+    }
+    this.engine.update();
+    this._animate_id = requestAnimationFrame(() => this.update());
+  }
+
+  planet_view(duration) {
+    this.engine.lock_rx = true;
+    this.engine.max_fov = 150;
+    duration = duration || 1000;
+    this.planet_view_progress_step = 1 / 60 / (duration / 1000);
+    this.planet_view_progress = 0;
+    this.planet_view_start_offset = this.engine.camera_offset_y;
+    this.planet_view_start_rx = this.engine.rx;
+    this.planet_view_start_fov = this.engine.fov;
+    this.planet_view_end_fov = 150;
+    this.planet_view_end_rx = -90;
+    this.planet_view_end_offset = (config.NET_SIZE / 2);
+    this.planet_view_should_update = true;
+    this.engine.smooth = 0;
+  }
+
+  planet_view_update() {
+    this.planet_view_progress += this.planet_view_progress_step;
+    var progress = easing.easeOutCubic(this.planet_view_progress);
+    this.engine.camera_offset_y = (this.planet_view_end_offset - this.planet_view_start_offset) * progress + this.planet_view_start_offset;
+    this.engine.fov = (this.planet_view_end_fov - this.planet_view_start_fov) * progress + this.planet_view_start_fov;
+    this.engine.dest_rx = (this.planet_view_end_rx - this.planet_view_start_rx) * progress + this.planet_view_start_rx;
+    if (this.planet_view_progress + this.planet_view_progress_step >= 1) {
+      this.planet_view_should_update = false;
+    }
+  }
+
+  normal_view(duration) {
+    this.engine.lock_rx = true;
+    duration = duration || 1000;
+    this.planet_view_progress_step = 1 / 60 / (duration / 1000);
+    this.planet_view_progress = 0;
+    this.planet_view_start_offset = this.engine.camera_offset_y;
+    this.planet_view_start_rx = this.engine.rx;
+    this.planet_view_start_fov = this.engine.fov;
+    this.planet_view_end_offset = 0;
+    this.planet_view_end_fov = 90;
+    this.planet_view_end_rx = 0;
+    this.planet_view_should_update = true;
   }
 
   //screenshot() {

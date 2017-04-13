@@ -98,7 +98,7 @@ function js() {
 
 let task_2_files = {
   hint: ['./js/**/*.js'],
-  html: ['./*.html'],
+  html: ['./*.html', './html/**/*'],
   js: ['./js/**/*.js'],
   css: ['./css/*.less'],
   images: ['./images/*.*'],

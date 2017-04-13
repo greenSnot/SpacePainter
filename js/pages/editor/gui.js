@@ -19,6 +19,7 @@ var dom_main_panel;
 var dom_main_palette;
 var dom_full_palette;
 var dom_btn_expand;
+var dom_btn_planet;
 var dom_btn_gyro;
 var dom_btn_auxiliary;
 var dom_btn_save;
@@ -80,6 +81,16 @@ function btn_color_on_click(e) {
   } else {
     $('.main-panel .palette-color.selected').removeClass('selected');
     $(this).addClass('selected');
+  }
+}
+
+function btn_planet_on_click(e) {
+  if ($(this).hasClass('active')) {
+    $(this).removeClass('active');
+    viewer.normal_view();
+  } else {
+    $(this).addClass('active');
+    viewer.planet_view();
   }
 }
 
@@ -182,6 +193,7 @@ function btn_redo_on_click() {
 
 function start_listeners() {
   dom_btn_expand.on('click', btn_expand_on_click);
+  dom_btn_planet.on('click', btn_planet_on_click);
   $('body').delegate('.palette-color', 'click', btn_color_on_click);
 
   dom_slider_head.on('touchmove', slider_head_on_move);
@@ -203,6 +215,7 @@ function init_selector() {
   dom_main_palette = $('.main-palette');
   dom_full_palette = $('.full-palette');
   dom_btn_expand = $('.btn-expand');
+  dom_btn_planet = $('.btn-planet');
   dom_btn_save = $('.btn-save');
   dom_btn_gyro = $('.btn-gyro');
   dom_btn_auxiliary = $('.page[data-page=editor] .btn-auxiliary');
@@ -240,7 +253,7 @@ function activate(_router_data, v, _pen) {
   init_full_palette();
   start_listeners();
 
-  dom_full_palette.find('.palette-color').first().trigger('click');
+  dom_full_palette.find('.palette-color')[0].click();
 
   set_mode(router_data.mode);
   router.update_url(router_data);
@@ -262,6 +275,7 @@ function stop_listeners() {
   $('body').undelegate('.palette-color', 'click', btn_color_on_click);
 
   dom_btn_expand.off('click');
+  dom_btn_planet.off('click');
   dom_slider_head.off('touchmove');
   dom_btn_redo.off('click');
   dom_btn_undo.off('click');
