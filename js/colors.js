@@ -57,8 +57,6 @@ var white = new THREE.Color();
 white.code = 0;
 code_to_color[white.code] = white;
 
-console.log(code_to_color);
-
 module.exports = {
   code_to_color: code_to_color,
   colors: colors,
