@@ -1,0 +1,71 @@
+@fa_path: "../node_modules/font-awesome/less";
+@import "@{fa_path}/variables.less";
+@import "@{fa_path}/mixins.less";
+@import "@{fa_path}/path.less";
+@import "@{fa_path}/core.less";
+@import "@{fa_path}/icons.less";
+
+*{
+  margin:0;
+  padding:0;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+  /* letter-spacing: -0.03em; */
+  word-break: normal;
+  word-wrap: break-word;
+  text-rendering: optimizeLegibility;
+}
+
+body{
+  -webkit-box-pack:center;
+}
+.h-flex{
+  display:-webkit-box;
+  -webkit-box-orient:horizontal;
+  display:flex;
+  flex-direction:row;
+}
+.v-flex{
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  display:flex;
+  flex-direction:column;
+}
+.vh-center{
+  display:-webkit-box;
+  -webkit-box-orient:horizontal;
+  display:flex;
+  flex-direction:row;
+  -webkit-box-pack:center;
+  justify-content:center;
+  -webkit-box-align:center;
+  align-items:center;
+}
+.h-center{
+  -webkit-box-pack:center;
+  justify-content:center;
+}
+.v-center{
+  -webkit-box-align:center;
+  align-items:center;
+}
+.h-start{
+  -webkit-box-pack:start;
+  justify-content:flex-start;
+}
+.v-start{
+  -webkit-box-align:start;
+  align-items:flex-start;
+}
+.h-end{
+  text-align:end;
+  -webkit-box-pack:end;
+  justify-content:flex-end;
+}
+.v-end{
+  -webkit-box-align:end;
+  align-items:flex-end;
+}
+.flex1{
+  -webkit-box-flex:1;
+  flex:1;
+}

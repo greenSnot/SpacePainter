@@ -138,6 +138,7 @@ function css() {
   }
 
   let css_files = [
+    './css/common.less',
     './css/index.less',
     './css/loading.less',
     './css/dialog.less',

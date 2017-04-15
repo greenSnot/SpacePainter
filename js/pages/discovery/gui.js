@@ -7,6 +7,7 @@ var btn_my_works;
 var btn_page_next;
 var btn_page_prev;
 var btn_auxiliary;
+var dom_cur_page;
 var avatar;
 
 var update_viewer;
@@ -29,16 +30,20 @@ function btn_my_works_on_click() {
 }
 
 function btn_page_next_on_click() {
-  set_n_page(n_page + 1);
-  update_viewer(n_page);
+  if ($(this).hasClass('active')) {
+    n_page++;
+    update_viewer(n_page);
+  }
 }
 
 function btn_page_prev_on_click() {
-  set_n_page(n_page - 1);
-  update_viewer(n_page);
+  if ($(this).hasClass('active')) {
+    n_page--;
+    update_viewer(n_page);
+  }
 }
 
-function set_n_page(_n_page) {
+function set_n_page(_n_page, total_pages) {
   n_page = _n_page > 0 ? _n_page : 1;
 
   btn_page_next.addClass('active');
@@ -46,6 +51,11 @@ function set_n_page(_n_page) {
   if (n_page === 1) {
     btn_page_prev.removeClass('active');
   }
+  if (n_page === total_pages) {
+    btn_page_next.removeClass('active');
+  }
+
+  dom_cur_page.text(n_page + '/' + total_pages);
 
   router.update_url({
     page: 'discovery',
@@ -76,6 +86,7 @@ function activate() {
   btn_create = $('.btn-create');
   btn_my_works = $('.btn-my-works');
   btn_auxiliary = $('.page[data-page=discovery] .btn-auxiliary');
+  dom_cur_page = $('.cur-page');
   avatar = btn_my_works.find('.avatar');
   btn_page_next = $('.btn-page-next');
   btn_page_prev = $('.btn-page-prev');

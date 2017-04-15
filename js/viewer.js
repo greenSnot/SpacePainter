@@ -79,7 +79,7 @@ export class Viewer {
       ignore_raycaster: true,
       mesh_generator: function () {
         return new THREE.Mesh(
-          new THREE.SphereGeometry(config.NET_SIZE - 1, 32, 32),
+          new THREE.SphereGeometry(config.NET_SIZE - 1, 36, 36),
           new THREE.MeshBasicMaterial({wireframe: true, transparent: true, color: 0x666666, opacity: 0.2, side: THREE.DoubleSide})
         );
       },
