@@ -253,6 +253,8 @@ function activate(_router_data, v, _pen) {
   init_full_palette();
   start_listeners();
 
+  //TODO
+  dom_full_palette.find('.palette-color')[0].click();
   dom_full_palette.find('.palette-color')[0].click();
 
   set_mode(router_data.mode);

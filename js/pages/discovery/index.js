@@ -13,7 +13,6 @@ var FilterTypes = require('./filter_types');
 
 var N_VIEWER = 2;
 
-var work_id_to_filename = {};
 
 var viewers = [];
 
@@ -23,7 +22,7 @@ function work_on_click() {
   router.activate({
     page: 'editor',
     mode: 'preview',
-    filename: work_id_to_filename[this.work_id]
+    work_id: this.host.work_id
   });
 }
 
@@ -48,8 +47,7 @@ function update_viewer(n_page, filter_type) {
     for (var i = 0;i < works.length && i < N_VIEWER; ++i) {
       show_viewer_by_index(i);
       var data = works[i];
-      viewers[i].work_id = data.id;
-      work_id_to_filename[data.id] = data.cdn_filename;
+      viewers[i].work_id = data._id;
       $(works_dom[i]).find('.work-name').text(data.name);
       viewers[i].load_from_url(config.cdn_works_path + data.cdn_filename);
     }

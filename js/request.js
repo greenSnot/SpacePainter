@@ -60,6 +60,20 @@ function get_user_basic_info() {
   });
 }
 
+function get_work_info(work_id) {
+  return new Promise(function(resolve, reject) {
+    post(config.get_work_info_url, {
+      work_id: work_id
+    }).then(function(res) {
+      if (res.code !== 0) {
+        reject(res.msg);
+        return;
+      }
+      resolve(res.data);
+    });
+  });
+}
+
 function upload_work(work_base64, work_name) {
   return new Promise(function(resolve, reject) {
     post(config.get_work_upload_token_url, {
@@ -93,6 +107,7 @@ module.exports = {
   get: get,
 
   upload_work: upload_work,
+  get_work_info: get_work_info,
   get_user_basic_info: get_user_basic_info,
   wechat_login: wechat_login,
 };
