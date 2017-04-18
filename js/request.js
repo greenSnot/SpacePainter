@@ -102,6 +102,20 @@ function upload_work(work_base64, work_name) {
   });
 }
 
+function delete_work(work_id) {
+  return new Promise(function(resolve, reject) {
+    post(config.remove_work_url, {
+      work_id: work_id
+    }).then(function(r) {
+      if (r.code !== 0) {
+        reject(res.msg);
+      } else {
+        resolve(r);
+      }
+    });
+  });
+}
+
 module.exports = {
   post: post,
   get: get,
@@ -109,5 +123,6 @@ module.exports = {
   upload_work: upload_work,
   get_work_info: get_work_info,
   get_user_basic_info: get_user_basic_info,
+  delete_work: delete_work,
   wechat_login: wechat_login,
 };

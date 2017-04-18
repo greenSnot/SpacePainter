@@ -23,11 +23,26 @@
   visibility: visible;
 }
 
-.work-name {
+.work-info {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translateX(-50%) translateY(-50%);
+  bottom: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  color: #eb5e52;
+  padding: 8px 5px 8px 10px;
+  box-sizing: border-box;
+}
+.work-name {
+  font-size: 16px;
+}
+.btn-like, .btn-remove {
+  margin: 0 6px 0 6px;
+  width: 25px;
+  height: 25px;
+  font-size: 25px;
+}
+.btn-like.hide, .btn-remove.hide {
+  display: none;
 }
 
 .btn-page-next, .btn-page-prev, .btn-create, .page[data-page=discovery] .btn-auxiliary {
@@ -53,7 +68,7 @@
   border-radius: 0;
   box-sizing: border-box;
   border: 2px solid #fff;
-  box-shadow: 0px 1px 3px #666;
+  box-shadow: 0px 1px 3px #aaa;
   overflow: hidden;
 }
 
@@ -131,6 +146,7 @@
 .filter-dropdown {
   visibility: hidden;
   top: 100%;
+  left: -1px;
   position: absolute;
   z-index: 2;
   width: 100%;

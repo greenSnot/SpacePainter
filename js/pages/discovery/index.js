@@ -48,12 +48,22 @@ function update_viewer(n_page, filter_type) {
       show_viewer_by_index(i);
       var data = works[i];
       viewers[i].work_id = data._id;
+      $(works_dom[i]).attr('data-id', data._id);
       $(works_dom[i]).find('.work-name').text(data.name);
+      $(works_dom[i]).find('.work-description').text(data.description);
+      if (filter_type == FilterTypes.my_works) {
+        $(works_dom[i]).find('.btn-remove').removeClass('hide');
+        $(works_dom[i]).find('.btn-like').addClass('hide');
+      } else {
+        $(works_dom[i]).find('.btn-like').removeClass('hide');
+        $(works_dom[i]).find('.btn-remove').addClass('hide');
+      }
+      //TODO likes
       viewers[i].load_from_url(config.cdn_works_path + data.cdn_filename);
     }
 
-    gui.set_n_page(n_page, Math.ceil(count / N_VIEWER));
     gui.update_filter(filter_type);
+    gui.set_n_page(n_page, Math.ceil(count / N_VIEWER));
   });
 }
 
@@ -96,7 +106,7 @@ function activate(opts) {
     viewers[i].activate();
   }
 
-  update_viewer(parseInt(opts.n_page));
+  update_viewer(parseInt(opts.n_page), parseInt(opts.filter));
   gui.activate();
 }
 

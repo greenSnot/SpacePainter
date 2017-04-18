@@ -1,11 +1,22 @@
 <script id="template-discovery-work" type="text/html">
-  <div class="work-item v-flex flex1" data-id="<#=id#>" data-filename="<#=filename#>">
+  <div class="work-item v-flex flex1">
     <div class="work-preview flex1">
       <div class="viewer-wrap">
         <div class="viewer-container">
         </div>
       </div>
     </div>
-    <div class="work-name"><#=work_name#></div>
+    <div class="work-info h-flex v-center">
+      <div class="v-flex flex1">
+        <div class="work-name"></div>
+        <div class="work-description"></div>
+      </div>
+      <div class="btn-like hide vh-center">
+        <i class="fa fa-heart-o" aria-hidden="true"></i>
+      </div>
+      <div class="btn-remove hide vh-center">
+        <i class="fa fa-trash-o" aria-hidden="true"></i>
+      </div>
+    </div>
   </div>
 </script>

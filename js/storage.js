@@ -80,7 +80,7 @@ function save() {
     loading.show();
     var data = {
       version: 1,
-      name: name,
+      name: encodeURI(name),
       colors: pack(faces_data_stack[cur_stack_index])
     };
     var base64 = btoa(JSON.stringify(data));
@@ -95,7 +95,7 @@ function save() {
 
   var dialog = new Prompt({
     title: '保存',
-    placeholder: '请输入作品名',
+    placeholder: '请输入作品名,同名作品将会被覆盖',
     confirm_on_click: function(e, value, self) {
       var name = value;
       do_save(name);
