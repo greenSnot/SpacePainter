@@ -4,10 +4,12 @@ var loading = require('../../loading.js');
 var request = require('../../request.js');
 var template = require('art-template-native');
 var gui = require('./gui.js');
+var user = require('../../user.js');
 
 import { Viewer } from '../../viewer.js';
 import { Pen } from '../../pen.js';
 
+var FilterTypes = require('./filter_types');
 
 var N_VIEWER = 2;
 
@@ -33,9 +35,10 @@ function show_viewer_by_index(index) {
   $('.work-item').eq(index).addClass('visible');
 }
 
-function update_viewer(n_page) {
+function update_viewer(n_page, filter_type) {
+  filter_type = filter_type || FilterTypes.popular;
   loading.show();
-  return request_popular_works(n_page).then(function(result) {
+  return request_works(n_page, filter_type).then(function(result) {
     var works = result.data;
     var count = result.count;
     loading.hide();
@@ -52,6 +55,7 @@ function update_viewer(n_page) {
     }
 
     gui.set_n_page(n_page, Math.ceil(count / N_VIEWER));
+    gui.update_filter(filter_type);
   });
 }
 
@@ -79,6 +83,7 @@ function init() {
 }
 
 function pause() {
+  hide_all_viewers();
   for (var i = 0; i < N_VIEWER; ++i) {
     viewers[i].pause();
   }
@@ -102,12 +107,17 @@ function dispose() {
   $('.page[data-page=' + page_name + ']').html('');
 }
 
-function request_popular_works(n_page) {
-  return request.post(config.get_popular_works_url, {
-    type: 'popular',
+function request_works(n_page, filter_type) {
+  var data = {
+    type: filter_type,
     skip: (n_page - 1) * N_VIEWER,
     limit: N_VIEWER,
-  }).then(function(result) {
+  };
+  if (filter_type === FilterTypes.my_works) {
+    data.type = FilterTypes.popular;
+    data.user_id = user.get_user_basic_info().id;
+  }
+  return request.post(config.get_works_url, data).then(function(result) {
     if (result.code !== 0) {
       console.error(result);
       return [];
