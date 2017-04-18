@@ -115,7 +115,7 @@ function request_works(n_page, filter_type) {
   };
   if (filter_type === FilterTypes.my_works) {
     data.type = FilterTypes.popular;
-    data.user_id = user.get_user_basic_info().id;
+    data.user_id = user.get_user_basic_info()._id;
   }
   return request.post(config.get_works_url, data).then(function(result) {
     if (result.code !== 0) {

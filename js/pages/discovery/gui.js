@@ -91,7 +91,7 @@ function btn_auxiliary_on_click(e) {
 }
 
 function update_user_info(info) {
-  avatar.attr('src', info.headimgurl);
+  avatar.attr('src', info.wechat.headimgurl);
 }
 
 function works_filter_on_click() {
