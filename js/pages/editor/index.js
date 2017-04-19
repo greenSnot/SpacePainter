@@ -16,12 +16,14 @@ function activate(router_data) {
   gui.activate(router_data, viewer, pen);
   viewer.activate();
   if (router_data.work_id) {
-    storage.store();
-
     request.get_work_info(router_data.work_id).then(function(data) {
       var url = config.cdn_works_path + data.cdn_filename;
       viewer.load_from_url(url);
+    }).then(function(r) {
+      storage.init(viewer);
     });
+  } else {
+    storage.init(viewer);
   }
 }
 
@@ -54,7 +56,6 @@ function init() {
     }
   });
   viewer.pause();
-  storage.init(viewer);
 }
 
 function pause() {

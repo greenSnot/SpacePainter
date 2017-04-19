@@ -101,7 +101,7 @@ export class Viewer {
       auto_rotation: opts.auto_rotation || 0.0,
       rx: 0,
       ry: 0,
-      fisheye_offset: - 30,
+      fisheye_offset: - 80,
       controls_on_click: opts.controls_on_click,
       on_click: opts.on_click || function() {},
       on_touch_move: opts.on_touch_move || function() {},
@@ -162,6 +162,7 @@ export class Viewer {
     return request.get(url).then(function(res) {
       self.load(storage.unpack(JSON.parse(res).colors));
       loading.hide();
+      return new Promise();
     });
   }
 
@@ -249,9 +250,8 @@ export class Viewer {
     this.planet_view_start_fov = this.engine.fov;
     this.planet_view_end_fov = 150;
     this.planet_view_end_rx = -90;
-    this.planet_view_end_offset = (config.NET_SIZE / 2);
+    this.planet_view_end_offset = (config.NET_SIZE - 1 + this.engine.fisheye_offset);
     this.planet_view_should_update = true;
-    this.engine.smooth = 0;
   }
 
   planet_view_update() {

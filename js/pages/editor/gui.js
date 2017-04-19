@@ -114,7 +114,7 @@ function slider_head_on_move(event) {
 
   var x = Math.floor(event.clientX >= 0 ? event.clientX : event.touches[0].pageX);
 
-  var index_to_size = [1, 4, 8, 16];
+  var index_to_size = [1, 8, 32, 64];
   var index = Math.floor((x - slider_offset_left + width_per_section / 2) / width_per_section);
   index = Math.max(0, Math.min(index_to_size.length - 1, index));
   pen.set_size(index_to_size[index]);
