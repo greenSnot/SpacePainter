@@ -147,7 +147,7 @@ export class Viewer {
     this.auxiliary = new Auxiliary(this.auxiliary_sphere_net_obj);
 
     this.faces_length = this.triangle_net_obj.mesh.geometry.attributes.position.array.length / 9;
-    this.faces_colors = new Int8Array(this.faces_length);
+    this.faces_colors = new Uint8Array(this.faces_length);
 
     this.clean(); // set white
   }
@@ -162,7 +162,6 @@ export class Viewer {
     return request.get(url).then(function(res) {
       self.load(storage.unpack(JSON.parse(res).colors));
       loading.hide();
-      return new Promise();
     });
   }
 
@@ -170,7 +169,7 @@ export class Viewer {
     if (!need_clone) {
       return this.faces_colors;
     }
-    var clone = new Int8Array(this.faces_length);
+    var clone = new Uint8Array(this.faces_length);
     for (var i in this.faces_colors) {
       clone[i] = this.faces_colors[i];
     }

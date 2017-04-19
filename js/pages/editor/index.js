@@ -18,7 +18,7 @@ function activate(router_data) {
   if (router_data.work_id) {
     request.get_work_info(router_data.work_id).then(function(data) {
       var url = config.cdn_works_path + data.cdn_filename;
-      viewer.load_from_url(url);
+      return viewer.load_from_url(url);
     }).then(function(r) {
       storage.init(viewer);
     });
