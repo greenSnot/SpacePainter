@@ -124,9 +124,9 @@ function update_filter(type) {
 }
 
 function btn_remove_on_click() {
+  var work_id = $(this).closest('.work-item').attr('data-id');
   function do_remove() {
     loading.show();
-    var work_id = $(this).closest('.work-item').attr('data-id');
     request.delete_work(work_id).then(function(r) {
       loading.hide();
       new Notice({
