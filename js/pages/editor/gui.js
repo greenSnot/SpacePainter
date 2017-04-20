@@ -159,8 +159,6 @@ function btn_setting_on_click() {
 }
 
 function btn_discovery_on_click() {
-  storage.reset();
-  update_edit_gui();
   router.activate({
     page: 'discovery'
   });

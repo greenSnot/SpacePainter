@@ -23,6 +23,7 @@ function activate(router_data) {
       storage.init(viewer);
     });
   } else {
+    viewer.clean();
     storage.init(viewer);
   }
 }
