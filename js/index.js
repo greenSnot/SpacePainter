@@ -30,6 +30,7 @@ function init() {
     if (e.code == -1) {
       request.wechat_login();
     } else {
+      console.error(e);
       new Confirm({
         title: 'Error',
         content: e.msg

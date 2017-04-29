@@ -116,10 +116,23 @@ function delete_work(work_id) {
   });
 }
 
+function load_img(url) {
+  return new Promise(function(resolve, reject) {
+    var img = document.createElement('img');
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+    img.setAttribute('src', url);
+    img.onload = function() {
+      resolve(img);
+    };
+  });
+}
+
 module.exports = {
   post: post,
   get: get,
 
+  load_img: load_img,
   upload_work: upload_work,
   get_work_info: get_work_info,
   get_user_basic_info: get_user_basic_info,

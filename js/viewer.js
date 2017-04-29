@@ -5,15 +5,17 @@ var THREE = Snot.THREE;
 var loading = require('./loading.js');
 var config = require('./config.js');
 var code_to_color = require('./colors.js').code_to_color;
+var get_nearest_color = require('./colors.js').get_nearest_color;
 var white = require('./colors.js').white;
 var storage = require('./storage.js');
 var easing = require('easing-js-ii');
+var to_fixed = require('./util.js').to_fixed;
 
 import { Auxiliary } from './auxiliary.js';
 
 var triangle_net_kd;
+var faces = [];
 function init_kd_tree(geo) {
-  var faces = [];
   for (var i = 0, j = geo.attributes.position.array.length / 9;i < j; ++i) {
     var v1_x = geo.attributes.position.array[i * 9];
     var v1_y = geo.attributes.position.array[i * 9 + 1];
@@ -42,6 +44,9 @@ function init_kd_tree(geo) {
 
 var size = 1024;
 //var screenshot_renderer = new THREE.WebGLRenderer();
+
+var dest_width = 600;
+var dest_height = dest_width / 2;
 
 export class Viewer {
 
@@ -201,9 +206,6 @@ export class Viewer {
 
   set_color_by_index(index, color, color_code) {
     var arr = this.triangle_net_obj.mesh.geometry.attributes.color.array;
-    function to_fixed(n) {
-      return n.toFixed(2);
-    }
 
     for (var i = 0; i < 9; i += 3) {
       arr[index * 9 + i] = to_fixed(color.r);
@@ -276,6 +278,53 @@ export class Viewer {
     this.planet_view_end_fov = 90;
     this.planet_view_end_rx = 0;
     this.planet_view_should_update = true;
+  }
+
+  load_from_sky_ball_url(url) {
+    var self = this;
+    request.load_img(url).then(function(img) {
+      var canvas = require('./util.js').resize_image(img, dest_width);
+      self.load_from_sky_ball_canvas(canvas);
+    });
+  }
+
+  load_from_sky_ball_canvas(canvas) {
+    var w = canvas.width;
+    var h = canvas.height;
+    var ctx = canvas.getContext('2d');
+    var pixels = ctx.getImageData(0, 0, w, h);
+    for (var i in faces) {
+      var rotation = util.position_to_rotation(faces[i].x, faces[i].z, faces[i].y);
+      var position_x = Math.floor(rotation.ry / 360 * w); // position of img relative to the face of the sphere 
+      var position_y = Math.floor((rotation.rx + 90) / 180 * h); // position of img relative to the face of the sphere 
+
+      var index = position_y * w + position_x;
+      var r = pixels.data[index * 4] / 255;
+      var g = pixels.data[index * 4 + 1] / 255;
+      var b = pixels.data[index * 4 + 2] / 255;
+
+      var nearest_color = get_nearest_color(r, g, b);
+      var arr = this.triangle_net_obj.mesh.geometry.attributes.color.array;
+
+      this.pen.color = new THREE.Color(nearest_color.r, nearest_color.g, nearest_color.b);
+      var color = this.pen.get_color();
+      for (var j = 0; j < 9; j += 3) {
+        arr[faces[i].index * 9 + j] = to_fixed(color.r);
+        arr[faces[i].index * 9 + j + 1] = to_fixed(color.g);
+        arr[faces[i].index * 9 + j + 2] = to_fixed(color.b);
+      }
+      this.triangle_net_obj.mesh.geometry.attributes.color.needsUpdate = true;
+    }
+  }
+
+  load_from_sky_box_url(url) {
+    var self = this;
+    request.load_img(url).then(function(img) {
+      var w = dest_width;
+      var full_canvas = require('./util.js').resize_image(img, w);
+      var sky_ball = require('./util.js').sky_box_to_sky_ball(full_canvas, dest_width / 2);
+      self.load_from_sky_ball_canvas(sky_ball);
+    });
   }
 
   //screenshot() {

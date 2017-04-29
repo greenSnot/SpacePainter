@@ -1,4 +1,5 @@
 var THREE = require('three');
+var kd_tree = require('snot.js').util.kd_tree;
 
 var code_to_color = {};
 
@@ -10,55 +11,77 @@ var colors = [];
  * ]
  */
 
-var i;
-var j;
-var k;
+var colors_kd;
+var white;
 
-var N_H = 12;
-var N_S = 3;
-var N_L = 4;
+function init() {
+  var i;
+  var j;
+  var k;
 
-var MIN_L = 0.6;
-var MAX_L = 0.9;
+  var N_H = 12;
+  var N_S = 3;
+  var N_L = 4;
 
-var MIN_S = 0.4;
-var MAX_S = 0.8;
+  var MIN_L = 0.6;
+  var MAX_L = 0.9;
 
-var index = 1;
-for (i = 0;i < N_H; ++i) {
-  for (j = N_S - 1;j >= 0; --j) {
-    colors.push([]);
-    for (k = 0;k < N_L; ++k) {
-      var color = new THREE.Color().setHSL(
-        i / N_H,
-        j / (N_S - 1) * (MAX_S - MIN_S) + MIN_S,
-        k / (N_L - 1) * (MAX_L - MIN_L) + MIN_L
-      );
-      color.code = index++;
-      colors[colors.length - 1].push(color);
-      code_to_color[color.code] = color;
+  var MIN_S = 0.4;
+  var MAX_S = 0.8;
+
+  var index = 1;
+  var colors_flat = [];
+  for (i = 0;i < N_H; ++i) {
+    for (j = N_S - 1;j >= 0; --j) {
+      colors.push([]);
+      for (k = 0;k < N_L; ++k) {
+        let color = new THREE.Color().setHSL(
+          i / N_H,
+          j / (N_S - 1) * (MAX_S - MIN_S) + MIN_S,
+          k / (N_L - 1) * (MAX_L - MIN_L) + MIN_L
+        );
+        color.code = index++;
+        colors[colors.length - 1].push(color);
+        colors_flat.push(color.getHSL());
+        code_to_color[color.code] = color;
+      }
     }
   }
-}
-// add gray colors
-colors.push([]);
-for (k = 0;k < N_L; ++k) {
-  var color = new THREE.Color().setHSL(
-    0,
-    0,
-    k / (N_L - 1) * 0.7 + 0.1
-  );
-  color.code = index++;
-  colors[colors.length - 1].push(color);
-  code_to_color[color.code] = color;
+  // add gray colors
+  colors.push([]);
+  for (k = 0;k < N_L; ++k) {
+    let color = new THREE.Color().setHSL(
+      0,
+      0,
+      k / (N_L - 1) * 0.7 + 0.1
+    );
+    color.code = index++;
+    colors[colors.length - 1].push(color);
+    colors_flat.push(color.getHSL());
+    code_to_color[color.code] = color;
+  }
+
+  white = new THREE.Color();
+  white.code = 0;
+  code_to_color[white.code] = white;
+  colors_flat.push(white.getHSL());
+  colors_kd = new kd_tree(colors_flat, function(a, b) {
+    return Math.pow(a.h - b.h, 2) + Math.pow(a.s - b.s, 2) + Math.pow(a.l - b.l, 2);
+  }, ['h', 's', 'l']);
 }
 
-var white = new THREE.Color();
-white.code = 0;
-code_to_color[white.code] = white;
+var nearest_color = new THREE.Color();
+function get_nearest_color(r, g, b) {
+  nearest_color.setRGB(r, g, b);
+  var nearest_hsl = colors_kd.nearest(nearest_color.getHSL(), 1)[0][0];
+  nearest_color.setHSL(nearest_hsl.h, nearest_hsl.s, nearest_hsl.l);
+  return nearest_color;
+}
 
+init();
 module.exports = {
   code_to_color: code_to_color,
   colors: colors,
-  white: white
+  white: white,
+  get_nearest_color: get_nearest_color,
 };
