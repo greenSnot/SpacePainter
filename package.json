@@ -9,7 +9,7 @@
     "gulp-templatex": "^4.0.1",
     "npm-zepto": "^1.1.7",
     "path": "^0.12.7",
-    "snot.js": "^1.1.3",
+    "snot.js": "^1.1.4",
     "three": "^0.84.0"
   },
   "devDependencies": {
