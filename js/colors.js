@@ -42,7 +42,7 @@ function init() {
         );
         color.code = index++;
         colors[colors.length - 1].push(color);
-        colors_flat.push(color.getHSL());
+        colors_flat.push(color);
         code_to_color[color.code] = color;
       }
     }
@@ -57,25 +57,24 @@ function init() {
     );
     color.code = index++;
     colors[colors.length - 1].push(color);
-    colors_flat.push(color.getHSL());
+    colors_flat.push(color);
     code_to_color[color.code] = color;
   }
 
   white = new THREE.Color();
   white.code = 0;
   code_to_color[white.code] = white;
-  colors_flat.push(white.getHSL());
+  colors_flat.push(white);
   colors_kd = new kd_tree(colors_flat, function(a, b) {
-    return Math.pow(a.h - b.h, 2) + Math.pow(a.s - b.s, 2) + Math.pow(a.l - b.l, 2);
-  }, ['h', 's', 'l']);
+    return Math.pow(a.r - b.r, 2) + Math.pow(a.g - b.g, 2) + Math.pow(a.b - b.b, 2);
+  }, ['r', 'g', 'b']);
 }
 
 var nearest_color = new THREE.Color();
 function get_nearest_color(r, g, b) {
   nearest_color.setRGB(r, g, b);
-  var nearest_hsl = colors_kd.nearest(nearest_color.getHSL(), 1)[0][0];
-  nearest_color.setHSL(nearest_hsl.h, nearest_hsl.s, nearest_hsl.l);
-  return nearest_color;
+  var nearest = colors_kd.nearest(nearest_color, 1)[0][0];
+  return nearest;
 }
 
 init();

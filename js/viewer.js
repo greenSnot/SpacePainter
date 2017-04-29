@@ -9,7 +9,6 @@ var get_nearest_color = require('./colors.js').get_nearest_color;
 var white = require('./colors.js').white;
 var storage = require('./storage.js');
 var easing = require('easing-js-ii');
-var to_fixed = require('./util.js').to_fixed;
 
 import { Auxiliary } from './auxiliary.js';
 
@@ -152,7 +151,7 @@ export class Viewer {
     this.auxiliary = new Auxiliary(this.auxiliary_sphere_net_obj);
 
     this.faces_length = this.triangle_net_obj.mesh.geometry.attributes.position.array.length / 9;
-    this.faces_colors = new Uint8Array(this.faces_length);
+    this.faces_colors = new Uint8Array(this.faces_length * 3);
 
     this.clean(); // set white
   }
@@ -174,7 +173,7 @@ export class Viewer {
     if (!need_clone) {
       return this.faces_colors;
     }
-    var clone = new Uint8Array(this.faces_length);
+    var clone = new Uint8Array(this.faces_length * 3);
     for (var i in this.faces_colors) {
       clone[i] = this.faces_colors[i];
     }
@@ -182,16 +181,11 @@ export class Viewer {
   }
 
   load(face_data) {
-    var code;
-    var cur_color_code = this.pen.color_code;
-    for (var i = 0; i < face_data.length; ++i) {
-      code = face_data[i];
-      if (code != this.faces_colors[i]) {
-        this.pen.set_color_by_code(code);
-        this.set_color_by_index(i, this.pen.get_color(), code);
-      }
+    var color = new THREE.Color();
+    for (var i = 0, j = 0; i < face_data.length; i += 3, ++j) {
+      color.setRGB(face_data[i] / 255, face_data[i + 1] / 255, face_data[i + 2] / 255);
+      this.set_color_by_index(j, color);
     }
-    this.pen.set_color_by_code(cur_color_code);
   }
 
   pause() {
@@ -204,16 +198,20 @@ export class Viewer {
     this.engine.start_listeners();
   }
 
-  set_color_by_index(index, color, color_code) {
+  set_color_by_index(index, color) {
     var arr = this.triangle_net_obj.mesh.geometry.attributes.color.array;
 
+    var i9 = index * 9;
+    var i3 = index * 3;
     for (var i = 0; i < 9; i += 3) {
-      arr[index * 9 + i] = to_fixed(color.r);
-      arr[index * 9 + i + 1] = to_fixed(color.g);
-      arr[index * 9 + i + 2] = to_fixed(color.b);
+      arr[i9 + i] = color.r;
+      arr[i9 + i + 1] = color.g;
+      arr[i9 + i + 2] = color.b;
     }
+    this.faces_colors[i3] = Math.floor(color.r * 255);
+    this.faces_colors[i3 + 1] = Math.floor(color.g * 255);
+    this.faces_colors[i3 + 2] = Math.floor(color.b * 255);
 
-    this.faces_colors[index] = color_code;
     this.triangle_net_obj.mesh.geometry.attributes.color.needsUpdate = true;
   }
 
@@ -221,14 +219,13 @@ export class Viewer {
     var neighbors = this.triangle_net_kd.nearest(point, pen.size);
 
     for (var j = 0; j < neighbors.length; ++j) {
-      this.set_color_by_index(neighbors[j][0].index, pen.get_color(), pen.color_code);
+      this.set_color_by_index(neighbors[j][0].index, pen.get_color());
     }
   }
 
   clean() {
-    var n_faces = this.triangle_net_obj.mesh.geometry.attributes.color.array.length / 9;
-    for (var i = 0; i < n_faces; ++i) {
-      this.set_color_by_index(i, white, white.code);
+    for (var i = 0; i < this.faces_length; ++i) {
+      this.set_color_by_index(i, white);
     }
   }
 
@@ -282,7 +279,7 @@ export class Viewer {
 
   load_from_sky_ball_url(url) {
     var self = this;
-    request.load_img(url).then(function(img) {
+    return request.load_img(url).then(function(img) {
       var canvas = require('./util.js').resize_image(img, dest_width);
       self.load_from_sky_ball_canvas(canvas);
     });
@@ -293,6 +290,7 @@ export class Viewer {
     var h = canvas.height;
     var ctx = canvas.getContext('2d');
     var pixels = ctx.getImageData(0, 0, w, h);
+    var color = new THREE.Color();
     for (var i in faces) {
       var rotation = util.position_to_rotation(faces[i].x, faces[i].z, faces[i].y);
       var position_x = Math.floor(rotation.ry / 360 * w); // position of img relative to the face of the sphere 
@@ -303,23 +301,14 @@ export class Viewer {
       var g = pixels.data[index * 4 + 1] / 255;
       var b = pixels.data[index * 4 + 2] / 255;
 
-      var nearest_color = get_nearest_color(r, g, b);
-      var arr = this.triangle_net_obj.mesh.geometry.attributes.color.array;
-
-      this.pen.color = new THREE.Color(nearest_color.r, nearest_color.g, nearest_color.b);
-      var color = this.pen.get_color();
-      for (var j = 0; j < 9; j += 3) {
-        arr[faces[i].index * 9 + j] = to_fixed(color.r);
-        arr[faces[i].index * 9 + j + 1] = to_fixed(color.g);
-        arr[faces[i].index * 9 + j + 2] = to_fixed(color.b);
-      }
-      this.triangle_net_obj.mesh.geometry.attributes.color.needsUpdate = true;
+      color.setRGB(r, g, b);
+      this.set_color_by_index(faces[i].index, color);
     }
   }
 
   load_from_sky_box_url(url) {
     var self = this;
-    request.load_img(url).then(function(img) {
+    return request.load_img(url).then(function(img) {
       var w = dest_width;
       var full_canvas = require('./util.js').resize_image(img, w);
       var sky_ball = require('./util.js').sky_box_to_sky_ball(full_canvas, dest_width / 2);
