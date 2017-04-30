@@ -151,7 +151,7 @@ export class Viewer {
     this.auxiliary = new Auxiliary(this.auxiliary_sphere_net_obj);
 
     this.faces_length = this.triangle_net_obj.mesh.geometry.attributes.position.array.length / 9;
-    this.faces_colors = new Uint8Array(this.faces_length * 3);
+    this.faces_colors = new Uint32Array(this.faces_length);
 
     this.clean(); // set white
   }
@@ -173,7 +173,7 @@ export class Viewer {
     if (!need_clone) {
       return this.faces_colors;
     }
-    var clone = new Uint8Array(this.faces_length * 3);
+    var clone = new Uint32Array(this.faces_length);
     for (var i in this.faces_colors) {
       clone[i] = this.faces_colors[i];
     }
@@ -182,9 +182,9 @@ export class Viewer {
 
   load(face_data) {
     var color = new THREE.Color();
-    for (var i = 0, j = 0; i < face_data.length; i += 3, ++j) {
-      color.setRGB(face_data[i] / 255, face_data[i + 1] / 255, face_data[i + 2] / 255);
-      this.set_color_by_index(j, color);
+    for (var i = 0; i < face_data.length; ++i) {
+      color.setRGB((face_data[i] % 256) / 255, ((face_data[i] >> 8) % 256) / 255, (face_data[i] >> 16) / 255);
+      this.set_color_by_index(i, color);
     }
   }
 
@@ -202,15 +202,12 @@ export class Viewer {
     var arr = this.triangle_net_obj.mesh.geometry.attributes.color.array;
 
     var i9 = index * 9;
-    var i3 = index * 3;
     for (var i = 0; i < 9; i += 3) {
       arr[i9 + i] = color.r;
       arr[i9 + i + 1] = color.g;
       arr[i9 + i + 2] = color.b;
     }
-    this.faces_colors[i3] = Math.floor(color.r * 255);
-    this.faces_colors[i3 + 1] = Math.floor(color.g * 255);
-    this.faces_colors[i3 + 2] = Math.floor(color.b * 255);
+    this.faces_colors[index] = Math.floor(color.r * 255) + (Math.floor(color.g * 255) << 8) + (Math.floor(color.b * 255) << 16);
 
     this.triangle_net_obj.mesh.geometry.attributes.color.needsUpdate = true;
   }
