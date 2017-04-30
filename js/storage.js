@@ -43,7 +43,11 @@ function reset() {
 }
 
 function pack(faces_data) {
-  return faces_data;
+  var res = [];
+  for (var i in faces_data) {
+    res.push(faces_data[i]);
+  }
+  return res;
  // return lzw_compress.pack(faces_data);
 }
 

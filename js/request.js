@@ -19,9 +19,9 @@ var post = function(url, data) {
   });
 };
 
-var get = function(url) {
+var get = function(url, data_type) {
   return new Promise(function(resolve, reject) {
-    $.ajax({
+    var d = {
       url: url,
       type: 'GET',
       xhrFields: {
@@ -30,7 +30,11 @@ var get = function(url) {
       timeout: 8000,
       success: resolve,
       error: reject
-    });
+    };
+    if (data_type) {
+      d.dataType = data_type;
+    }
+    $.ajax(d);
   });
 };
 
