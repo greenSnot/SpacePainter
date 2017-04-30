@@ -2,7 +2,7 @@ var template = require('art-template-native');
 
 var loading = require('./loading.js');
 var request = require('./request.js');
-var lzw_compress = require('lzwcompress');
+//var lzw_compress = require('lzwcompress');
 var viewer;
 var faces_data_stack;
 var cur_stack_index;
@@ -43,11 +43,13 @@ function reset() {
 }
 
 function pack(faces_data) {
-  return lzw_compress.pack(faces_data);
+  return faces_data;
+ // return lzw_compress.pack(faces_data);
 }
 
 function unpack(data) {
-  return lzw_compress.unpack(data);
+  return data;
+  //return lzw_compress.unpack(data);
 }
 
 function save() {
