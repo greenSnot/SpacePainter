@@ -164,7 +164,7 @@ export class Viewer {
     loading.show();
     var self = this;
     return request.get(url, 'json').then(function (res) {
-      self.load(storage.unpack(JSON.parse(res).colors));
+      self.load(storage.unpack(res.colors));
       loading.hide();
     });
   }
