@@ -118,7 +118,33 @@ function sky_box_to_sky_ball(full_canvas, ball_w) {
   return sky_ball;
 }
 
+function export_file(filename, data) {
+  let urlObject = window.URL || window.webkitURL || window;
+
+  let export_blob = new Blob([data]);
+
+  let save_link = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+  save_link.href = urlObject.createObjectURL(export_blob);
+  save_link.download = filename;
+  function fake_click(obj) {
+    let ev = document.createEvent("MouseEvents");
+    ev.initMouseEvent(
+        "click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null
+        );
+    obj.dispatchEvent(ev);
+  }
+  fake_click(save_link);
+}
+
+function save_base64_as_file(filename, base64) {
+  var link = document.createElement('a');
+  link.setAttribute('href', base64);
+  link.setAttribute('download', filename);
+  link.click();
+}
+
 module.exports = {
+  export_file: export_file,
   sky_box_to_sky_ball: sky_box_to_sky_ball,
   to_fixed: to_fixed,
   resize_image: resize_image,

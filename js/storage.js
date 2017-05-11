@@ -56,30 +56,29 @@ function unpack(data) {
   //return lzw_compress.unpack(data);
 }
 
-function save() {
-  function do_save(name) {
-    loading.show();
-    var data = {
-      version: 1,
-      name: encodeURI(name),
-      colors: pack(faces_data_stack[cur_stack_index])
-    };
-    var base64 = btoa(JSON.stringify(data));
-    request.upload_work(base64, name).then(function(result) {
-      loading.hide();
-      new Notice({
-        text: '保存成功'
-      });
-      dialog.dispose();
-    });
-  }
+function do_save(color_data, name) {
+  var data = {
+    version: 1,
+    name: encodeURI(name),
+    colors: pack(color_data)
+  };
+  var base64 = btoa(JSON.stringify(data));
+  return request.upload_work(base64, name);
+}
 
+function save() {
   var dialog = new Prompt({
     title: '保存',
     placeholder: '请输入作品名,同名作品将会被覆盖',
     confirm_on_click: function(e, value, self) {
       var name = value;
-      do_save(name);
+      loading.show();
+      do_save(faces_data_stack[cur_stack_index], name).then(function(result) {
+        loading.hide();
+        new Notice({
+          text: '保存成功'
+        });
+      });
     }
   });
 }
