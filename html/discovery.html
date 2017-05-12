@@ -13,22 +13,22 @@
       <div class="logo-part3"></div>
     </div>
   </div>
-  <div class="works-filter vh-center">
+  <div class="works-filter vh-center" v-bind:class="{ active : active }" v-on:click="toggle">
     <div class="works-filter-text">
-      热门作品
+      {{text}}
     </div>
     <div class="split-line"></div>
     <i class="fa fa-caret-down" aria-hidden="true"></i>
     <div class="filter-dropdown">
-      <div class="dropdown-item btn-popular-works h-flex v-center h-center" data-type="popular" data-filter-id="1">
+      <div class="dropdown-item btn-popular-works h-flex v-center h-center" data-type="popular" data-filter-id="1" v-on:click="on_click">
         <div class="dropdown-text">热门作品</div>
         <i class="fa fa-trophy" aria-hidden="true"></i>
       </div>
-      <div class="dropdown-item btn-latest-wroks h-flex v-center h-center" data-type="latest" data-filter-id="2">
+      <div class="dropdown-item btn-latest-wroks h-flex v-center h-center" data-type="latest" data-filter-id="2" v-on:click="on_click">
         <div class="dropdown-text">最新作品</div>
         <i class="fa fa-clock-o" aria-hidden="true"></i>
       </div>
-      <div class="dropdown-item btn-my-works h-flex v-center h-center" data-type="my_works" data-filter-id="3">
+      <div class="dropdown-item btn-my-works h-flex v-center h-center" data-type="my_works" data-filter-id="3" v-on:click="on_click">
         <div class="dropdown-text">我的作品</div>
         <i class="fa fa-user-o" aria-hidden="true"></i>
       </div>
@@ -39,14 +39,15 @@
   </div>
 </div>
 <div class="works-wrap flex1 v-flex">
+  <work v-for="(i, index) in works" :key="index" v-bind:visible="i.visible" v-bind:work_id="i.work_id" v-bind:name="i.name" v-bind:description="i.description" v-bind:btn_like_visible="i.btn_like_visible" v-bind:btn_remove_visible="i.btn_remove_visible"></work>
 </div>
 <div class="page-buttons h-flex h-end">
-  <div class="btn-create active vh-center">+</div>
-  <div class="btn-auxiliary active vh-center">#</div>
+  <div class="btn-create active vh-center" v-on:click="on_click">+</div>
+  <div class="btn-auxiliary vh-center" v-bind:class="{ active: active }" v-on:click="toggle">#</div>
   <div class="cur-page flex1 vh-center">
-    1/10
+    {{n_page}}/{{total_pages}}
   </div>
-  <div class="btn-page-prev active vh-center"><</div>
-  <div class="btn-page-next active vh-center">></div>
+  <div class="btn-page-prev vh-center" v-bind:class="{ active: active }" v-on:click="on_click"><</div>
+  <div class="btn-page-next vh-center" v-bind:class="{ active: active }" v-on:click="on_click">></div>
 </div>
-<%=__include('./html/templates/discovery-work')%>
+<%=__include('./html/templates/work')%>

@@ -1,5 +1,6 @@
 var config = require('./config.js');
 var util = require('./util.js');
+var when = require('when');
 var pages;
 
 function init() {
@@ -7,8 +8,9 @@ function init() {
     editor: require('./pages/editor'),
     discovery: require('./pages/discovery')
   };
+  var queue = [];
   for (var i in pages) {
-    pages[i].init();
+    queue.push(pages[i].init());
   }
 
   window.addEventListener('popstate', function(event) {
@@ -16,6 +18,7 @@ function init() {
       activate(event.state);
     }
   }, false);
+  return when.all(queue);
 }
 
 function pause(page_name) {

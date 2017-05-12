@@ -17,6 +17,8 @@ var router_data;
 var viewer;
 var pen;
 
+var components = {};
+
 function set_mode(mode) {
   router_data.mode = mode;
   var i;
@@ -34,8 +36,6 @@ function set_mode(mode) {
   }
   Vue.set(components.pen_size_controller, 'visible', false);
 }
-
-var components = {};
 
 function update_main_palette(row_id, index) {
   Vue.set(components.main_palette, 'row_colors', colors[row_id]);

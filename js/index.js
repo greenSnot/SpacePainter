@@ -12,30 +12,30 @@ import { Confirm } from './confirm.js';
 function init() {
   init_dialog();
   loading.init();
-  router.init();
-
   template.config('openTag', '<#');
   template.config('closeTag', '#>');
 
   var fast_click = require('fastclick');
   fast_click(document.body);
 
-  var query = util.get_query_from_url();
-  query.page = query.page || 'discovery';
+  router.init().then(function() {
+    var query = util.get_query_from_url();
+    query.page = query.page || 'discovery';
 
-  user.init().then(function() {
-    loading.hide();
-    router.activate(query);
-  }).catch(function(e) {
-    if (e.code == -1) {
-      request.wechat_login();
-    } else {
-      console.error(e);
-      new Confirm({
-        title: 'Error',
-        content: e.msg
-      });
-    }
+    user.init().then(function() {
+      loading.hide();
+      router.activate(query);
+    }).catch(function(e) {
+      if (e.code == -1) {
+        request.wechat_login();
+      } else {
+        console.error(e);
+        new Confirm({
+          title: 'Error',
+          content: e.msg
+        });
+      }
+    });
   });
 }
 

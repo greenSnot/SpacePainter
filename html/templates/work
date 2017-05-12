@@ -1,5 +1,5 @@
-<script id="template-discovery-work" type="text/html">
-  <div class="work-item v-flex flex1">
+<script id="template-work" type="text/html">
+  <div class="work-item v-flex flex1" v-bind:class="{ visible: visible }">
     <div class="work-preview flex1">
       <div class="viewer-wrap">
         <div class="viewer-container">
@@ -8,13 +8,13 @@
     </div>
     <div class="work-info h-flex v-center">
       <div class="v-flex flex1">
-        <div class="work-name"></div>
-        <div class="work-description"></div>
+        <div class="work-name">{{name}}</div>
+        <div class="work-description">{{description}}</div>
       </div>
-      <div class="btn-like hide vh-center">
+      <div class="btn-like vh-center" v-if="btn_like_visible" v-on:click="like">
         <i class="fa fa-heart-o" aria-hidden="true"></i>
       </div>
-      <div class="btn-remove hide vh-center">
+      <div class="btn-remove vh-center" v-if="btn_remove_visible" v-on:click="remove">
         <i class="fa fa-trash-o" aria-hidden="true"></i>
       </div>
     </div>

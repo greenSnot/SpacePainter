@@ -5,33 +5,36 @@ var request = require('../../request.js');
 var template = require('art-template-native');
 var gui = require('./gui.js');
 var user = require('../../user.js');
+var _ = require('lodash');
 
 import { Viewer } from '../../viewer.js';
 import { Pen } from '../../pen.js';
+
+import Vue from 'vue';
 
 var FilterTypes = require('./filter_types');
 
 var N_VIEWER = 2;
 
-
-var viewers = [];
-
-var works_dom = [];
-
-function work_on_click() {
-  router.activate({
-    page: 'editor',
-    mode: 'preview',
-    work_id: this.host.work_id
-  });
-}
+var empty_work = {
+  work_id: '',
+  name: '',
+  descript: '',
+  visible: false,
+  btn_like_visible: false,
+  btn_remove_visible: false,
+  viewer_id: null,
+};
+var cur_works = [];
+var viewers = {};
+var Works; // Vue instance
 
 function hide_all_viewers() {
-  $('.work-item').removeClass('visible');
-}
-
-function show_viewer_by_index(index) {
-  $('.work-item').eq(index).addClass('visible');
+  for (var i in Works.works) {
+    var v = viewers[Works.works[i].viewer_id];
+    v.pause();
+    Works.works[i].visible = false;
+  }
 }
 
 function update_viewer(n_page, filter_type) {
@@ -41,25 +44,27 @@ function update_viewer(n_page, filter_type) {
     var works = result.data;
     var count = result.count;
     loading.hide();
-    var html = '';
 
     hide_all_viewers();
-    for (var i = 0;i < works.length && i < N_VIEWER; ++i) {
-      show_viewer_by_index(i);
+    for (var i = 0;i < Works.works.length; ++i) {
+      Works.works[i].visible = true;
+
       var data = works[i];
-      viewers[i].work_id = data._id;
-      $(works_dom[i]).attr('data-id', data._id);
-      $(works_dom[i]).find('.work-name').text(data.name);
-      $(works_dom[i]).find('.work-description').text(data.description);
+      var v = viewers[Works.works[i].viewer_id];
+      v.work_id = data._id;
+      Works.works[i].work_id =  data._id;
+      Works.works[i].name =  data.name;
+      Works.works[i].desciption =  data.description;
       if (filter_type == FilterTypes.my_works) {
-        $(works_dom[i]).find('.btn-remove').removeClass('hide');
-        $(works_dom[i]).find('.btn-like').addClass('hide');
+        Works.works[i].btn_like_visible = false;
+        Works.works[i].btn_remove_visible = true;
       } else {
-        $(works_dom[i]).find('.btn-like').removeClass('hide');
-        $(works_dom[i]).find('.btn-remove').addClass('hide');
+        Works.works[i].btn_like_visible = true;
+        Works.works[i].btn_remove_visible = false;
       }
       //TODO likes
-      viewers[i].load_from_url(config.cdn_works_path + data.cdn_filename);
+      v.load_from_url(config.cdn_works_path + data.cdn_filename);
+      v.activate();
     }
 
     gui.update_filter(filter_type);
@@ -68,12 +73,36 @@ function update_viewer(n_page, filter_type) {
 }
 
 function init() {
-  var html = '';
   var i;
+
+  gui.init(viewers, update_viewer);
+
   for (i = 0; i < N_VIEWER; ++i) {
-    html += template('template-discovery-work', {});
+    cur_works.push(_.cloneDeep(empty_work));
   }
-  $('.works-wrap').html(html);
+
+  Works = new Vue({
+    el: '.works-wrap',
+    data: {
+      works: cur_works,
+    },
+    watch: {
+      works: {
+        handler: function (val, oldVal) {
+        },
+        deep: true
+      }
+    },
+  });
+
+  function work_on_click() {
+    router.activate({
+      page: 'editor',
+      mode: 'preview',
+      work_id: this.host.work_id
+    });
+  }
+
   for (i = 0; i < N_VIEWER; ++i) {
     var v = new Viewer({
       dom: $('.work-item .viewer-wrap')[i],
@@ -83,18 +112,16 @@ function init() {
       controls_on_click: work_on_click,
     });
     v.pause();
-    v.auxiliary.show();
-    viewers.push(v);
-    works_dom.push($('.work-item')[i]);
+    cur_works[i].viewer_id = v.id;
+    viewers[v.id] = v;
   }
-  gui.init(viewers, update_viewer);
+  return new Promise(function(resolve, reject) {
+    resolve();
+  });
 }
 
 function pause() {
   hide_all_viewers();
-  for (var i = 0; i < N_VIEWER; ++i) {
-    viewers[i].pause();
-  }
   gui.pause();
 }
 
@@ -102,17 +129,8 @@ function activate(opts) {
   opts.n_page = opts.n_page || 1;
   router.update_url(opts);
 
-  for (var i = 0; i < N_VIEWER; ++i) {
-    viewers[i].activate();
-  }
-
   update_viewer(parseInt(opts.n_page), parseInt(opts.filter));
   gui.activate();
-}
-
-function dispose() {
-  var page_name = 'discovery';
-  $('.page[data-page=' + page_name + ']').html('');
 }
 
 function request_works(n_page, filter_type) {
@@ -138,5 +156,4 @@ module.exports = {
   init: init,
   pause: pause,
   activate: activate,
-  dispose: dispose,
 };

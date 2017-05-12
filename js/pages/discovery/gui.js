@@ -8,18 +8,7 @@ var FilterTypes = require('./filter_types');
 
 import { Notice } from '../../notice.js';
 import { Confirm } from '../../confirm.js';
-
-var btn_create;
-var btn_remove;
-var works_filter;
-var works_filter_text;
-var filter_dropdown;
-var btn_my_works;
-var btn_page_next;
-var btn_page_prev;
-var btn_auxiliary;
-var dom_cur_page;
-var avatar;
+import Vue from 'vue';
 
 var current_filter_type = FilterTypes.popular;
 
@@ -27,48 +16,185 @@ var update_viewer;
 var viewers;
 var n_page;
 
+var components = {};
+
 function init(_viewers, _update_viewer) {
   viewers = _viewers;
-  update_viewer = _update_viewer;
-}
 
-function btn_create_on_click() {
-  router.activate({
-    page: 'editor',
+  Vue.component('work', {
+    template: '#template-work',
+    props: [
+      'work_id',
+      'visible',
+      'btn_remove_visible',
+      'btn_like_visible',
+      'description',
+      'name'
+    ],
+    methods: {
+      like: function(e) {
+        //TODO
+      },
+      remove: function(e) {
+        var el = e.target;
+        var work_id = this.work_id;
+        function do_remove() {
+          loading.show();
+          request.delete_work(work_id).then(function(r) {
+            loading.hide();
+            new Notice({
+              text: '删除成功'
+            });
+            update_viewer(n_page, current_filter_type);
+          });
+        }
+        new Confirm({
+          title: '提示',
+          content: '确定要删除吗？',
+          buttons: [
+            {
+              text: '取消',
+              style: 'primary',
+              on_click: function(e, self) {
+                self.dispose();
+              }
+            },
+            {
+              text: '确定',
+              style: 'primary',
+              on_click: function(e, self) {
+                do_remove();
+                self.dispose();
+              }
+            }
+          ],
+        });
+      },
+    }
+  });
+
+  update_viewer = _update_viewer;
+
+  components.works_filter = new Vue({
+    el: '.works-filter',
+    data: {
+      active: false,
+      text: '',
+    },
+    methods: {
+      toggle: function() {
+        this.active = !this.active;
+      },
+      on_click: function(e) {
+        var el = e.target;
+        this.toggle();
+        n_page = 1;
+        update_filter(FilterTypes[$(el).closest('.dropdown-item').attr('data-type')]);
+        update_viewer(n_page, current_filter_type);
+        e.stopPropagation();
+      }
+    }
+  });
+
+  components.btn_page_next = new Vue({
+    el: '.btn-page-next',
+    data: {
+      active: false,
+    },
+    methods: {
+      on_click: function() {
+        if (this.active) {
+          n_page++;
+          update_viewer(n_page, current_filter_type);
+        }
+      }
+    }
+  });
+
+  components.btn_page_prev = new Vue({
+    el: '.btn-page-prev',
+    data: {
+      active: false,
+    },
+    methods: {
+      on_click: function() {
+        if (this.active) {
+          n_page--;
+          update_viewer(n_page, current_filter_type);
+        }
+      }
+    }
+  });
+
+  components.btn_create = new Vue({
+    el: '.btn-create',
+    data: {
+      visible: false,
+    },
+    methods: {
+      on_click: function() {
+        router.activate({
+          page: 'editor',
+        });
+      }
+    }
+  });
+
+  components.cur_page = new Vue({
+    el: '.cur-page',
+    data: {
+      n_page: 0,
+      total_pages: 0,
+    },
+  });
+
+  components.btn_auxiliary = new Vue({
+    el: '.page[data-page=discovery] .btn-auxiliary',
+    data: {
+      active: false,
+    },
+    methods: {
+      toggle: function() {
+        this.active = !this.active;
+        this.update();
+      },
+      update: function() {
+        if (this.active) {
+          show_all_auxiliary();
+        } else {
+          hide_all_auxiliary();
+        }
+      }
+    }
   });
 }
 
-function btn_my_works_on_click() {
-  //TODO
-}
-
-function btn_page_next_on_click() {
-  if ($(this).hasClass('active')) {
-    n_page++;
-    update_viewer(n_page, current_filter_type);
+function hide_all_auxiliary() {
+  for (var i in viewers) {
+    viewers[i].auxiliary.hide();
   }
 }
 
-function btn_page_prev_on_click() {
-  if ($(this).hasClass('active')) {
-    n_page--;
-    update_viewer(n_page, current_filter_type);
+function show_all_auxiliary() {
+  for (var i in viewers) {
+    viewers[i].auxiliary.show();
   }
 }
 
 function set_n_page(_n_page, total_pages) {
   n_page = _n_page > 0 ? _n_page : 1;
 
-  btn_page_next.addClass('active');
-  btn_page_prev.addClass('active');
+  components.btn_page_next.active = true;
+  components.btn_page_prev.active = true;
   if (n_page === 1) {
-    btn_page_prev.removeClass('active');
+    components.btn_page_prev.active = false;
   }
   if (n_page === total_pages) {
-    btn_page_next.removeClass('active');
+    components.btn_page_next.active = false;
   }
 
-  dom_cur_page.text(n_page + '/' + total_pages);
+  components.cur_page.n_page = n_page;
+  components.cur_page.total_pages = total_pages;
 
   update_url(n_page, current_filter_type);
 }
@@ -81,117 +207,22 @@ function update_url(n_page, current_filter_type) {
   });
 }
 
-function btn_auxiliary_on_click(e) {
-  var i;
-  if ($(this).hasClass('active')) {
-    $(this).removeClass('active');
-    for (i in viewers) {
-      viewers[i].auxiliary.hide();
-    }
-  } else {
-    $(this).addClass('active');
-    for (i in viewers) {
-      viewers[i].auxiliary.show();
-    }
-  }
-}
-
 function update_user_info(info) {
-  avatar.attr('src', info.wechat.headimgurl);
-}
-
-function works_filter_on_click() {
-  if ($(this).hasClass('active')) {
-    $(this).removeClass('active');
-  } else {
-    $(this).addClass('active');
-  }
-}
-
-function filter_dropdown_on_click(e) {
-  n_page = 1;
-  works_filter.removeClass('active');
-  update_filter(FilterTypes[$(this).attr('data-type')]);
-  update_viewer(n_page, current_filter_type);
-  e.stopPropagation();
+  $('.avatar').attr('src', info.wechat.headimgurl);
 }
 
 function update_filter(type) {
   current_filter_type = type;
   update_url(n_page, current_filter_type);
   var text = $('.dropdown-item[data-filter-id="' + type + '"] .dropdown-text').text();
-  works_filter_text.text(text);
-}
-
-function btn_remove_on_click() {
-  var work_id = $(this).closest('.work-item').attr('data-id');
-  function do_remove() {
-    loading.show();
-    request.delete_work(work_id).then(function(r) {
-      loading.hide();
-      new Notice({
-        text: '删除成功'
-      });
-      update_viewer(n_page, current_filter_type);
-    });
-  }
-  new Confirm({
-    title: '提示',
-    content: '确定要删除吗？',
-    buttons: [
-      {
-        text: '取消',
-        style: 'primary',
-        on_click: function(e, self) {
-          self.dispose();
-        }
-      },
-      {
-        text: '确定',
-        style: 'primary',
-        on_click: function(e, self) {
-          do_remove();
-          self.dispose();
-        }
-      }
-    ],
-  });
+  components.works_filter.text = text;
 }
 
 function activate() {
-  btn_create = $('.btn-create');
-  btn_remove = $('.btn-remove');
-  works_filter = $('.works-filter');
-  works_filter_text = $('.works-filter-text');
-  filter_dropdown = $('.works-filter .dropdown-item');
-  btn_my_works = $('.btn-my-works');
-  btn_auxiliary = $('.page[data-page=discovery] .btn-auxiliary');
-  dom_cur_page = $('.cur-page');
-  avatar = $('.avatar');
-  btn_page_next = $('.btn-page-next');
-  btn_page_prev = $('.btn-page-prev');
-
-  btn_create.on('click', btn_create_on_click);
-  btn_remove.on('click', btn_remove_on_click);
-  filter_dropdown.on('click', filter_dropdown_on_click);
-  works_filter.on('click', works_filter_on_click);
-  btn_my_works.on('click', btn_my_works_on_click);
-  btn_page_next.on('click', btn_page_next_on_click);
-  btn_page_prev.on('click', btn_page_prev_on_click);
-  btn_auxiliary.on('click', btn_auxiliary_on_click);
-
   update_user_info(user.get_user_basic_info());
 }
 
 function pause() {
-  btn_create.off('click');
-  btn_remove.off('click');
-  filter_dropdown.off('click');
-  works_filter.off('click');
-  btn_my_works.off('click');
-  btn_page_next.off('click');
-  btn_page_prev.off('click');
-  btn_auxiliary.off('click');
 }
 
 module.exports = {

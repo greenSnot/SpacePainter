@@ -58,6 +58,9 @@ function init() {
   });
   viewer.pause();
   gui.init(viewer, pen);
+  return new Promise(function(resolve, reject) {
+    resolve();
+  });
 }
 
 function pause() {

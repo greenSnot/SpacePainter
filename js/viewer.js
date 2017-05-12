@@ -54,6 +54,7 @@ export class Viewer {
     this.pen = opts.pen;
 
     var self = this;
+    this.id = Math.random();
 
     this.triangle_net_obj = {
       id: 'triangle_net',
@@ -189,11 +190,19 @@ export class Viewer {
   }
 
   pause() {
+    if (!this.enabled) {
+      return;
+    }
     cancelAnimationFrame(this._animate_id);
     this.engine.stop_listeners();
+    this.enabled = false;
   }
 
   activate() {
+    if (this.enabled) {
+      return;
+    }
+    this.enabled = true;
     this.update();
     this.engine.start_listeners();
   }
