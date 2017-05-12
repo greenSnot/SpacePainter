@@ -14,36 +14,36 @@
 <div class="full-palette" v-bind:class="{ active: active }">
   <color-row v-for="(row_colors, index) in colors" v-bind:row_id="index" v-bind:row_colors="row_colors" :key="index"></color-row>
 </div>
-<div class="buttons-wrap">
-  <div class="btn-planet vh-center" v-on:click="toggle" v-if="visible" v-bind:class="{ active: active }">
-    <i class="fa fa-globe" aria-hidden="true"></i>
-  </div>
-  <div class="btn-auxiliary vh-center" v-on:click="toggle" v-if="visible" v-bind:class="{ active: active }">
-    <i class="fa fa-hashtag" aria-hidden="true"></i>
-  </div>
-  <div class="btn-gyro vh-center" v-on:click="toggle" v-if="visible" v-bind:class="{ active: active }">
-    <i class="fa fa-compass" aria-hidden="true"></i>
-  </div>
-  <div class="btn-save vh-center" v-on:click="save" v-if="visible" v-bind:class="{ active: active }">
-    <i class="fa fa-save" aria-hidden="true"></i>
-  </div>
-  <div class="btn-redo vh-center" v-on:click="redo" v-if="visible" v-bind:class="{ active: active }">
-    <i class="fa fa-repeat" aria-hidden="true"></i>
-  </div>
-  <div class="btn-undo vh-center" v-on:click="undo" v-if="visible" v-bind:class="{ active: active }">
-    <i class="fa fa-undo" aria-hidden="true"></i>
-  </div>
-  <!--
-  <div class="btn-setting vh-center active">
-    <i class="fa fa-cog" aria-hidden="true"></i>
-  </div>
-  -->
-</div>
 <div class="btn-discovery vh-center" v-if="visible" v-on:click="on_click">
   <i class="fa fa-home" aria-hidden="true"></i>
 </div>
 <div class="main-panel h-flex v-center">
-  <div class="main-palette flex1" v-show="visible">
+  <div class="buttons-wrap">
+    <div class="btn-planet vh-center" v-on:click="toggle" v-if="visible" v-bind:class="{ active: active }">
+      <i class="fa fa-globe" aria-hidden="true"></i>
+    </div>
+    <div class="btn-auxiliary vh-center" v-on:click="toggle" v-if="visible" v-bind:class="{ active: active }">
+      <i class="fa fa-hashtag" aria-hidden="true"></i>
+    </div>
+    <div class="btn-gyro vh-center" v-on:click="toggle" v-if="visible" v-bind:class="{ active: active }">
+      <i class="fa fa-compass" aria-hidden="true"></i>
+    </div>
+    <div class="btn-save vh-center" v-on:click="save" v-if="visible" v-bind:class="{ active: active }">
+      <i class="fa fa-save" aria-hidden="true"></i>
+    </div>
+    <div class="btn-redo vh-center" v-on:click="redo" v-if="visible" v-bind:class="{ active: active }">
+      <i class="fa fa-repeat" aria-hidden="true"></i>
+    </div>
+    <div class="btn-undo vh-center" v-on:click="undo" v-if="visible" v-bind:class="{ active: active }">
+      <i class="fa fa-undo" aria-hidden="true"></i>
+    </div>
+    <!--
+    <div class="btn-setting vh-center active">
+      <i class="fa fa-cog" aria-hidden="true"></i>
+    </div>
+    -->
+  </div>
+  <div class="main-palette flex1 v-flex h-center" v-show="visible">
     <color-row v-bind:row_id="row_id" v-bind:row_colors="row_colors" v-bind:selected_index="selected_index"></color-row>
   </div>
   <div class="pen-size-controller h-flex v-center flex1" v-show="visible">
@@ -61,7 +61,7 @@
       <div class="slider-head" v-on:touchmove="slider_head_on_move"></div>
     </div>
   </div>
-  <div class="btn-expand vh-center" v-bind:class="{ active: active }" v-on:click="toggle"></div>
+  <div class="btn-expand vh-center" v-if="visible" v-bind:class="{ active: active }" v-on:click="toggle"></div>
 </div>
 <%=__include('./html/templates/color-unit')%>
 <%=__include('./html/templates/color-row')%>
