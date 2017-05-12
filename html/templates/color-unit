@@ -1,0 +1,4 @@
+<script id="template-color-unit" type="text/html">
+  <div class="palette-color" v-on:click="on_click" v-bind:class="{ selected : selected } " v-bind:style="{ background: '#' + color, border: '1px solid #' + border_color } " v-bind:data-color="color" v-bind:data-color-code="color_code">
+  </div>
+</script>

@@ -13,7 +13,7 @@ var viewer;
 
 function activate(router_data) {
   router_data.mode = router_data.mode || 'edit';
-  gui.activate(router_data, viewer, pen);
+  gui.activate(router_data);
   viewer.activate();
   if (router_data.work_id) {
     request.get_work_info(router_data.work_id).then(function(data) {
@@ -57,6 +57,7 @@ function init() {
     }
   });
   viewer.pause();
+  gui.init(viewer, pen);
 }
 
 function pause() {
